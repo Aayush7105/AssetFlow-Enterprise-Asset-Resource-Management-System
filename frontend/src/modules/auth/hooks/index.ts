@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/auth.store"
 import { authService } from "@/modules/auth/services"
 import { toast } from "sonner"
 
+
 export function useAuth() {
   const setUser = useAuthStore((s) => s.setUser)
   const clearUser = useAuthStore((s) => s.logout)
@@ -15,7 +16,7 @@ export function useAuth() {
       toast.success(`Welcome back, ${user.name}! Logged in as ${user.role}.`)
       return user
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Invalid email or password.")
+      toast.error("Unable to sign in. Please try again.")
       throw error
     }
   }

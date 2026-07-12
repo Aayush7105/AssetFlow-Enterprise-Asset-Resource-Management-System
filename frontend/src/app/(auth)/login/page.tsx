@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/input"
@@ -18,12 +18,22 @@ import { loginSchema, type LoginFormData } from "@/lib/validators"
 import { useAuth } from "@/modules/auth/hooks"
 import { useRouter } from "next/navigation"
 import { Loader2, Eye, EyeOff, ArrowRight } from "lucide-react"
+import { useAuthStore } from "@/stores/auth.store"
 
 export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isLoading = useAuthStore((state) => state.isLoading)
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace(ROUTES.DASHBOARD)
+    }
+  }, [isLoading, isAuthenticated, router])
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -35,9 +45,27 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true)
+    
+    // Minimum loading duration to prevent jarring visual flash
+    const minTimePromise = new Promise((resolve) => setTimeout(resolve, 1500))
+    
+    // Briefly delay showing the fullscreen loader overlay so the button's
+    // spinner loading state is visible to the user first.
+    const showLoaderTimeout = setTimeout(() => {
+      useAuthStore.getState().setAuthenticating(true)
+    }, 200)
+
     try {
-      await login(data)
+      await Promise.all([
+        login(data),
+        minTimePromise,
+      ])
+      
+      clearTimeout(showLoaderTimeout)
       router.push(ROUTES.DASHBOARD)
+    } catch (error) {
+      clearTimeout(showLoaderTimeout)
+      useAuthStore.getState().setAuthenticating(false)
     } finally {
       setIsSubmitting(false)
     }

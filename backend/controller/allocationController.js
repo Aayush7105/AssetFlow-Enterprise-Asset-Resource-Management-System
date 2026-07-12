@@ -142,6 +142,17 @@ const allocateAsset = async (req, res) => {
             reference_id: allocationResult.rows[0].id
         });
 
+        if (req.user.id !== user_id) {
+            await notifyUser({
+                user_id: req.user.id,
+                title: "Asset allocation recorded",
+                message: `${asset.name} was allocated successfully.`,
+                type: "ASSET_ASSIGNED",
+                reference_type: "ALLOCATION",
+                reference_id: allocationResult.rows[0].id
+            });
+        }
+
         return res.status(201).json({
             success: true,
             message: "Asset allocated successfully.",
@@ -363,6 +374,17 @@ const returnAsset = async (req, res) => {
             reference_id: id
         });
 
+        if (req.user.id !== allocation.user_id) {
+            await notifyUser({
+                user_id: req.user.id,
+                title: "Asset return recorded",
+                message: "The asset return has been recorded successfully.",
+                type: "ASSET_RETURNED",
+                reference_type: "ALLOCATION",
+                reference_id: id
+            });
+        }
+
         return res.status(200).json({
             success: true,
             message: "Asset returned successfully."
@@ -468,5 +490,6 @@ module.exports = {
     returnAsset,
     getAssetAllocationHistory
 };
+
 
 

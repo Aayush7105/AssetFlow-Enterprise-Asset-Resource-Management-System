@@ -1,6 +1,16 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
-  "http://localhost:5000/api"
+function getApiBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")
+
+  if (configuredUrl) {
+    return configuredUrl
+  }
+
+  if (typeof window !== "undefined") {
+    return `${window.location.protocol}//${window.location.hostname}:5000/api`
+  }
+
+  return "http://localhost:5000/api"
+}
 
 type QueryValue = string | number | boolean | null | undefined
 
@@ -23,7 +33,7 @@ function getStoredToken() {
 
 function buildUrl(path: string, query?: Record<string, QueryValue>) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`
-  const url = new URL(`${API_BASE_URL}${normalizedPath}`)
+  const url = new URL(`${getApiBaseUrl()}${normalizedPath}`)
 
   Object.entries(query ?? {}).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -88,4 +98,4 @@ export function clearAuthSession() {
   }
 }
 
-export { API_BASE_URL }
+export const API_BASE_URL = getApiBaseUrl()

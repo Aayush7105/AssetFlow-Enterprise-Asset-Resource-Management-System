@@ -28,8 +28,30 @@ const auditRoutes = require("./routes/auditRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const activityLogRoutes = require("./routes/activityLogRoutes");
 const app = express();
+const allowedFrontendUrl = process.env.FRONTEND_URL;
+const isDevFrontendOrigin = (origin) => {
+    if (!origin) return true;
+
+    try {
+        const url = new URL(origin);
+        const isFrontendPort = url.port === "3000";
+        const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
+        const isPrivateNetwork = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(url.hostname);
+
+        return isFrontendPort && (isLocalhost || isPrivateNetwork);
+    } catch {
+        return false;
+    }
+};
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+        if (allowedFrontendUrl) {
+            return callback(null, origin === allowedFrontendUrl);
+        }
+
+        return callback(null, isDevFrontendOrigin(origin));
+    },
     credentials: true
 }));
 app.use(express.json());
