@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-
+const { createActivityLog } = require("../utils/activityLogService");
 const raiseMaintenanceRequest = async (req, res) => {
     try {
 
@@ -298,6 +298,19 @@ const approveMaintenanceRequest = async (req, res) => {
         );
 
         await db.query("COMMIT");
+        await createActivityLog({
+
+    user_id:req.user.id,
+
+    action:"MAINTENANCE_APPROVED",
+
+    entity_type:"MAINTENANCE",
+
+    entity_id:id,
+
+    description:"Maintenance approved."
+
+});
 
         return res.status(200).json({
             success: true,

@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const { createActivityLog } = require("../utils/activityLogService");
 const createTransferRequest = async (req, res) => {
     try {
 
@@ -123,6 +123,19 @@ const createTransferRequest = async (req, res) => {
                 reason
             ]
         );
+        await createActivityLog({
+
+    user_id:req.user.id,
+
+    action:"TRANSFER_APPROVED",
+
+    entity_type:"TRANSFER",
+
+    entity_id:id,
+
+    description:"Transfer approved."
+
+});
 
         return res.status(201).json({
             success: true,

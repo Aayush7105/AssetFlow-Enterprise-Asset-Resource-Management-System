@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const { createActivityLog } = require("../utils/activityLogService");
 const allocateAsset = async (req, res) => {
     try {
 
@@ -118,6 +118,19 @@ const allocateAsset = async (req, res) => {
         );
 
         await db.query("COMMIT");
+        await createActivityLog({
+
+    user_id:req.user.id,
+
+    action:"ASSET_ALLOCATED",
+
+    entity_type:"ASSET",
+
+    entity_id:asset_id,
+
+    description:"Allocated asset to employee."
+
+});
 
         return res.status(201).json({
             success: true,

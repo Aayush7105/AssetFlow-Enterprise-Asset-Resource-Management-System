@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const { createActivityLog } = require("../utils/activityLogService");
 const createAuditCycle = async (req, res) => {
     try {
 
@@ -572,6 +572,19 @@ const closeAuditCycle = async (req, res) => {
             `,
             [id]
         );
+        await createActivityLog({
+
+    user_id:req.user.id,
+
+    action:"AUDIT_CLOSED",
+
+    entity_type:"AUDIT",
+
+    entity_id:id,
+
+    description:"Audit cycle closed."
+
+});
 
         return res.status(200).json({
             success: true,
