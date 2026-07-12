@@ -38,14 +38,14 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center pb-2">
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
-        <p className="text-sm text-muted-foreground">Sign in to your account to continue</p>
+    <Card className="border-0 shadow-none bg-transparent p-0 flex flex-col gap-0 w-full">
+      <CardHeader className="text-left pb-6 p-0 flex flex-col gap-1">
+        <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">Sign in to your account to continue</p>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-0">
             <FormField
               control={form.control}
               name="email"
@@ -74,7 +74,7 @@ export default function LoginPage() {
                     <FormLabel>Password</FormLabel>
                     <a
                       href={ROUTES.FORGOT_PASSWORD}
-                      className="text-xs text-primary hover:underline font-medium"
+                      className="text-xs text-muted-foreground hover:text-foreground font-medium"
                     >
                       Forgot password?
                     </a>
@@ -104,7 +104,7 @@ export default function LoginPage() {
               )}
             />
           </CardContent>
-          <CardFooter className="flex flex-col gap-6 pt-2">
+          <CardFooter className="flex flex-col gap-6 pt-6 p-0">
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">or</span>
+                <span className="bg-background px-2 text-muted-foreground">or</span>
               </div>
             </div>
 
