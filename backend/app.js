@@ -25,8 +25,8 @@ const resourceBookingRoutes = require("./routes/resourceBookingRoutes");
 const transferRequestRoutes = require("./routes/transferRequestRoutes");
 const maintenanceRoutes = require("./routes/maintenanceRoutes");
 const auditRoutes = require("./routes/auditRoutes");
-
-
+const notificationRoutes = require("./routes/notificationRoutes");
+const activityLogRoutes = require("./routes/activityLogRoutes");
 const app = express();
 app.use(cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
@@ -48,6 +48,8 @@ app.use("/api/resource-bookings", resourceBookingRoutes);
 app.use("/api/transfer-requests", transferRequestRoutes);
 app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/audits", auditRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/activity-logs", activityLogRoutes);
 db.connect().then(async() => {
     console.log("Connected to the database");
     await createUserTable();

@@ -286,5 +286,9 @@ const deleteNotification = async (req, res) => {
 };
 module.exports = {
     getMyNotifications,
-    getNotificationById
+    getNotificationById,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification
+    
 };
