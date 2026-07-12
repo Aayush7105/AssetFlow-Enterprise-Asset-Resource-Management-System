@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/models/asset.dart';
 
+import 'package:qr_scanner/services/auth_service.dart';
+
 class AssetDetailScreen extends StatelessWidget {
   final Asset asset;
-  const AssetDetailScreen({super.key, required this.asset});
+  final AuthService authService;
+  
+  const AssetDetailScreen({
+    super.key, 
+    required this.asset,
+    required this.authService,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = authService.currentUser;
+    final bool isEmployee = user?.role == 'EMPLOYEE';
+    
+    bool canEdit = false;
+    if (user != null) {
+      if (user.role == 'ADMIN' || user.role == 'ASSET_MANAGER') {
+        canEdit = true;
+      } else if (user.role == 'DEPARTMENT_HEAD' && user.departmentId == asset.departmentId) {
+        canEdit = true;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -16,6 +35,19 @@ class AssetDetailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          if (canEdit)
+            IconButton(
+              icon: const Icon(Icons.edit_rounded),
+              tooltip: 'Edit Asset',
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/asset-form',
+                  arguments: asset,
+                );
+              },
+            ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -76,70 +108,74 @@ class AssetDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Asset info card
-            _sectionCard(
-              theme,
-              title: 'Asset Information',
-              icon: Icons.info_outline_rounded,
-              children: [
-                _infoRow('Serial Number', asset.serialNumber ?? '—'),
-                _infoRow('Condition', asset.assetCondition),
-                _infoRow('Location', asset.location ?? '—'),
-                _infoRow('Bookable', asset.isBookable ? 'Yes' : 'No'),
-                Builder(builder: (context) {
-                  final acqDate = asset.acquisitionDate;
-                  if (acqDate != null) {
-                    return _infoRow(
-                      'Acquired',
-                      acqDate.split('T').first,
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-                Builder(builder: (context) {
-                  final acqCost = asset.acquisitionCost;
-                  if (acqCost != null) {
-                    return _infoRow(
-                      'Cost',
-                      '₹${acqCost.toStringAsFixed(2)}',
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-              ],
-            ),
-            const SizedBox(height: 12),
+            if (!isEmployee) ...[
+              // Asset info card
+              _sectionCard(
+                theme,
+                title: 'Asset Information',
+                icon: Icons.info_outline_rounded,
+                children: [
+                  _infoRow('Serial Number', asset.serialNumber ?? '—'),
+                  _infoRow('Condition', asset.assetCondition),
+                  _infoRow('Location', asset.location ?? '—'),
+                  _infoRow('Bookable', asset.isBookable ? 'Yes' : 'No'),
+                  Builder(builder: (context) {
+                    final acqDate = asset.acquisitionDate;
+                    if (acqDate != null) {
+                      return _infoRow(
+                        'Acquired',
+                        acqDate.split('T').first,
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                  Builder(builder: (context) {
+                    final acqCost = asset.acquisitionCost;
+                    if (acqCost != null) {
+                      return _infoRow(
+                        'Cost',
+                        '₹${acqCost.toStringAsFixed(2)}',
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
 
-            // Category
-            _sectionCard(
-              theme,
-              title: 'Category',
-              icon: Icons.category_rounded,
-              children: [
-                _infoRow('Name', asset.categoryName ?? '—'),
-              ],
-            ),
-            const SizedBox(height: 12),
+            if (!isEmployee) ...[
+              // Category
+              _sectionCard(
+                theme,
+                title: 'Category',
+                icon: Icons.category_rounded,
+                children: [
+                  _infoRow('Name', asset.categoryName ?? '—'),
+                ],
+              ),
+              const SizedBox(height: 12),
 
-            // Department
-            _sectionCard(
-              theme,
-              title: 'Department',
-              icon: Icons.business_rounded,
-              children: [
-                _infoRow('Name', asset.departmentName ?? '—'),
-                _infoRow('Code', asset.departmentCode ?? '—'),
-              ],
-            ),
-            const SizedBox(height: 12),
+              // Department
+              _sectionCard(
+                theme,
+                title: 'Department',
+                icon: Icons.business_rounded,
+                children: [
+                  _infoRow('Name', asset.departmentName ?? '—'),
+                  _infoRow('Code', asset.departmentCode ?? '—'),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
 
             // Allocation
             if (asset.allocation != null) ...[
               _sectionCard(
                 theme,
-                title: 'Current Allocation',
-                icon: Icons.person_rounded,
-                accentColor: Colors.tealAccent,
+                title: 'Allocation',
+                icon: Icons.assignment_ind_rounded,
+                accentColor: Colors.blue.shade500,
                 children: [
                   _infoRow(
                     'Assigned To',
@@ -188,12 +224,12 @@ class AssetDetailScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             // Maintenance
-            if (asset.maintenance != null) ...[
+            if (!isEmployee && asset.maintenance != null) ...[
               _sectionCard(
                 theme,
                 title: 'Latest Maintenance',
                 icon: Icons.build_rounded,
-                accentColor: Colors.orangeAccent,
+                accentColor: Colors.orange.shade500,
                 children: [
                   _infoRow('Issue', asset.maintenance!.issueDescription),
                   _infoRow('Priority', asset.maintenance!.priority),
@@ -306,22 +342,25 @@ class AssetDetailScreen extends StatelessWidget {
   }
 
   Color _statusColor(String status) {
-    switch (status) {
+    switch (status.toUpperCase()) {
       case 'AVAILABLE':
-        return Colors.greenAccent;
+        return Colors.green.shade500;
       case 'ALLOCATED':
-        return Colors.lightBlueAccent;
+      case 'IN_USE':
+        return Colors.blue.shade500;
       case 'RESERVED':
-        return Colors.amberAccent;
+        return Colors.amber.shade500;
       case 'UNDER_MAINTENANCE':
-        return Colors.orangeAccent;
+      case 'MAINTENANCE':
+        return Colors.orange.shade500;
       case 'LOST':
-        return Colors.redAccent;
+        return Colors.red.shade700;
       case 'RETIRED':
+        return Colors.red.shade500;
       case 'DISPOSED':
-        return Colors.grey;
+        return Colors.grey.shade500;
       default:
-        return Colors.white54;
+        return Colors.grey.shade500;
     }
   }
 
