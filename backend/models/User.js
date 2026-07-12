@@ -15,6 +15,9 @@ const createUserTable = async()=>{
       department_id UUID,
 
       status VARCHAR(20) DEFAULT 'ACTIVE',
+      is_first_login BOOLEAN DEFAULT TRUE,
+
+      last_login TIMESTAMP,
 
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
