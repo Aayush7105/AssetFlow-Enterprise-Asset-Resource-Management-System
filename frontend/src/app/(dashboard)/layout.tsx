@@ -3,6 +3,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { AppNavbar } from "@/components/layout/app-navbar"
+import { CommandPalette } from "@/components/layout/command-palette"
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </SidebarInset>
+      <CommandPalette />
     </SidebarProvider>
   )
 }

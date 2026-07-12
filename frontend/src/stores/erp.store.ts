@@ -162,6 +162,10 @@ interface ERPState {
 
   // Activity Helper
   addActivity: (activity: Omit<ERPActivity, "time">) => void
+
+  // UI state
+  isCommandPaletteOpen: boolean
+  setCommandPaletteOpen: (open: boolean) => void
 }
 
 export const useERPStore = create<ERPState>((set) => ({
@@ -543,5 +547,9 @@ export const useERPStore = create<ERPState>((set) => ({
 
   addActivity: (act) => set((state) => ({
     activities: [{ ...act, time: "Just now" }, ...state.activities]
-  }))
+  })),
+
+  // UI state
+  isCommandPaletteOpen: false,
+  setCommandPaletteOpen: (isCommandPaletteOpen) => set({ isCommandPaletteOpen })
 }))

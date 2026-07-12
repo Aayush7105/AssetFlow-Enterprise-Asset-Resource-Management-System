@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Button } from "@/components/ui/button"
@@ -40,6 +40,21 @@ export default function AuditsPage() {
     startDate: "",
     endDate: "",
   })
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const action = params.get("action")
+      const searchParam = params.get("search")
+
+      if (action === "schedule") {
+        setAuditForm({ name: "", scope: "Full Company", department: "", auditor: "", startDate: "", endDate: "" })
+        setIsCycleOpen(true)
+      } else if (searchParam) {
+        setSearch(searchParam)
+      }
+    }
+  }, [])
 
   const handleAuditSubmit = (e: React.FormEvent) => {
     e.preventDefault()

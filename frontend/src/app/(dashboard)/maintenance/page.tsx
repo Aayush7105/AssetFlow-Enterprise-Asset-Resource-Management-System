@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Button } from "@/components/ui/button"
@@ -46,6 +46,21 @@ export default function MaintenancePage() {
   const [techForm, setTechForm] = useState({
     technician: "",
   })
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const action = params.get("action")
+      const searchParam = params.get("search")
+
+      if (action === "request") {
+        setReqForm({ assetId: "", assetName: "", description: "", priority: "Medium" })
+        setIsRequestOpen(true)
+      } else if (searchParam) {
+        setSearch(searchParam)
+      }
+    }
+  }, [])
 
   const handleRequestSubmit = (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Button } from "@/components/ui/button"
@@ -56,6 +56,31 @@ export default function EmployeesPage() {
   })
 
   // Handlers
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const empId = params.get("id")
+      const action = params.get("action")
+
+      if (empId) {
+        const found = employees.find((emp) => emp.id === empId)
+        if (found) {
+          setActiveEmployee(found)
+          setEditForm({
+            name: found.name,
+            email: found.email,
+            department: found.department,
+            role: found.role,
+            status: found.status,
+          })
+          setIsEditOpen(true)
+        }
+      } else if (action === "invite") {
+        setInviteForm({ name: "", email: "", department: "", role: "employee", status: "Active" })
+        setIsInviteOpen(true)
+      }
+    }
+  }, [employees])
   const handleInviteSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!inviteForm.name || !inviteForm.email || !inviteForm.department) return

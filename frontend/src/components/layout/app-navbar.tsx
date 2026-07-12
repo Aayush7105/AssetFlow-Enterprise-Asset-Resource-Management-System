@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation"
 import { ROUTES } from "@/lib/constants"
 import { useAuthStore } from "@/stores/auth.store"
 import { useAuth } from "@/modules/auth/hooks"
+import { useERPStore } from "@/stores/erp.store"
 
 export function AppNavbar() {
   const { theme, setTheme } = useTheme()
@@ -24,6 +25,7 @@ export function AppNavbar() {
   const router = useRouter()
   const user = useAuthStore((s) => s.user)
   const { logout } = useAuth()
+  const setCommandPaletteOpen = useERPStore((s) => s.setCommandPaletteOpen)
 
   const displayName = user?.name || "John Doe"
   const email = user?.email || "john@company.com"
@@ -50,7 +52,7 @@ export function AppNavbar() {
       <button
         type="button"
         className="hidden md:flex items-center gap-2 bg-muted/50 border border-border/50 rounded-lg h-8 px-3 w-60 text-sm text-muted-foreground hover:bg-muted/80 hover:border-border transition-colors duration-150 cursor-pointer"
-        onClick={() => {}}
+        onClick={() => setCommandPaletteOpen(true)}
       >
         <Search className="size-3.5 shrink-0" />
         <span className="flex-1 text-left text-[13px]">Search...</span>
