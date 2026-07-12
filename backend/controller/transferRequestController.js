@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const { createActivityLog } = require("../utils/activityLogService");
+const { notifyUser, notifyUsersByRole } = require("../utils/notificationService");
 const createTransferRequest = async (req, res) => {
     try {
 
@@ -127,15 +128,34 @@ const createTransferRequest = async (req, res) => {
 
     user_id:req.user.id,
 
-    action:"TRANSFER_APPROVED",
+    action:"TRANSFER_REQUEST_CREATED",
 
     entity_type:"TRANSFER",
 
-    entity_id:id,
+    entity_id:result.rows[0].id,
 
-    description:"Transfer approved."
+    description:"Transfer request created."
 
 });
+
+        await notifyUser({
+            user_id: to_user_id,
+            title: "Transfer requested",
+            message: "An asset transfer has been requested for you.",
+            type: "TRANSFER_REQUEST",
+            reference_type: "TRANSFER",
+            reference_id: result.rows[0].id
+        });
+
+        await notifyUsersByRole({
+            roles: ["ADMIN", "ASSET_MANAGER"],
+            exclude_user_id: req.user.id,
+            title: "Transfer approval needed",
+            message: "A new asset transfer request is waiting for approval.",
+            type: "TRANSFER_REQUEST",
+            reference_type: "TRANSFER",
+            reference_id: result.rows[0].id
+        });
 
         return res.status(201).json({
             success: true,
@@ -404,6 +424,24 @@ const approveTransferRequest = async (req, res) => {
 
         await db.query("COMMIT");
 
+        await notifyUser({
+            user_id: transfer.from_user_id,
+            title: "Transfer approved",
+            message: "Your asset transfer request has been approved.",
+            type: "TRANSFER_APPROVED",
+            reference_type: "TRANSFER",
+            reference_id: id
+        });
+
+        await notifyUser({
+            user_id: transfer.to_user_id,
+            title: "Asset transferred to you",
+            message: "An asset transfer to you has been approved.",
+            type: "TRANSFER_APPROVED",
+            reference_type: "TRANSFER",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Transfer approved successfully."
@@ -468,6 +506,24 @@ const rejectTransferRequest = async (req, res) => {
                 id
             ]
         );
+
+        await notifyUser({
+            user_id: transfer.requested_by,
+            title: "Transfer rejected",
+            message: "Your asset transfer request has been rejected.",
+            type: "TRANSFER_REJECTED",
+            reference_type: "TRANSFER",
+            reference_id: id
+        });
+
+        await notifyUser({
+            user_id: transfer.to_user_id,
+            title: "Transfer rejected",
+            message: "The asset transfer request for you has been rejected.",
+            type: "TRANSFER_REJECTED",
+            reference_type: "TRANSFER",
+            reference_id: id
+        });
 
         return res.status(200).json({
             success: true,

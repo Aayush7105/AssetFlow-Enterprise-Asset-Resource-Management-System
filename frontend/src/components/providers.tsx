@@ -27,7 +27,7 @@ function getQueryClient() {
 }
 
 import { useEffect } from "react"
-import { useAuthStore, DEFAULT_ADMIN_USER } from "@/stores/auth.store"
+import { useAuthStore } from "@/stores/auth.store"
 import { useSettingsStore } from "@/stores/settings.store"
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -41,10 +41,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           useAuthStore.getState().setUser(JSON.parse(stored))
         } catch (e) {
           console.error("Failed to parse stored user", e)
-          useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+          useAuthStore.getState().setUser(null)
         }
       } else {
-        useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+        useAuthStore.getState().setUser(null)
       }
       useSettingsStore.getState().loadSettings()
     }
@@ -63,3 +63,4 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   )
 }
+

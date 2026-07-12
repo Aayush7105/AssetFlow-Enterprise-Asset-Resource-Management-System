@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form"
 import { ROUTES } from "@/lib/constants"
 import { loginSchema, type LoginFormData } from "@/lib/validators"
-import { useAuth, DEMO_USERS } from "@/modules/auth/hooks"
+import { useAuth } from "@/modules/auth/hooks"
 import { useRouter } from "next/navigation"
 import { Loader2, Eye, EyeOff, ArrowRight } from "lucide-react"
 
@@ -154,29 +154,6 @@ export default function LoginPage() {
         </form>
       </Form>
 
-      <div className="space-y-3 pt-4 border-t border-border/50">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-          Quick Demo Accounts (Click to log in)
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {DEMO_USERS.map((user) => (
-            <button
-              key={user.role}
-              type="button"
-              onClick={() => {
-                form.setValue("email", user.email)
-                form.setValue("password", user.password)
-                form.handleSubmit(onSubmit)()
-              }}
-              className="flex flex-col text-left p-3 rounded-lg border border-border/80 bg-muted/20 hover:bg-accent/50 hover:border-border/100 hover:scale-[1.02] cursor-pointer transition-all duration-200"
-            >
-              <span className="text-xs font-semibold text-foreground truncate">{user.name}</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-medium mt-0.5">{user.role.replace("_", " ")}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="space-y-4 pt-2">
         <p className="text-xs text-center text-muted-foreground/70">
           Already invited?{" "}
@@ -198,3 +175,4 @@ export default function LoginPage() {
     </div>
   )
 }
+

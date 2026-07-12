@@ -23,17 +23,6 @@ interface AuthState {
   logout: () => void
 }
 
-export const DEFAULT_ADMIN_USER: User = {
-  id: "demo-admin-id",
-  email: "admin@assetflow.com",
-  name: "Alex Admin",
-  role: "admin",
-  organizationId: "org-1",
-  organizationName: "Acme Enterprise",
-  isOnboarded: true,
-  industry: "Technology",
-}
-
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
@@ -70,3 +59,4 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, isAuthenticated: false })
   },
 }))
+

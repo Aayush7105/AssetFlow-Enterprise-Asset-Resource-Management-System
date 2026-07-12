@@ -4,59 +4,6 @@ import { useAuthStore } from "@/stores/auth.store"
 import { authService } from "@/modules/auth/services"
 import { toast } from "sonner"
 
-export const DEMO_USERS = [
-  {
-    id: "demo-admin-id",
-    email: "admin@assetflow.com",
-    password: "AdminPassword123",
-    name: "Alex Admin",
-    role: "admin" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-  {
-    id: "demo-manager-id",
-    email: "manager@assetflow.com",
-    password: "ManagerPassword123",
-    name: "Sarah Manager",
-    role: "asset_manager" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-  {
-    id: "demo-head-id",
-    email: "head@assetflow.com",
-    password: "HeadPassword123",
-    name: "David Head",
-    role: "department_head" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-  {
-    id: "demo-employee-id",
-    email: "employee@assetflow.com",
-    password: "EmployeePassword123",
-    name: "Emily Employee",
-    role: "employee" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-  {
-    id: "demo-auditor-id",
-    email: "auditor@assetflow.com",
-    password: "AuditorPassword123",
-    name: "Audrey Auditor",
-    role: "auditor" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-]
-
 export function useAuth() {
   const setUser = useAuthStore((s) => s.setUser)
   const clearUser = useAuthStore((s) => s.logout)
@@ -116,3 +63,4 @@ export function useAuth() {
     verifyEmail,
   }
 }
+

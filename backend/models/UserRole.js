@@ -12,7 +12,8 @@ const createUserRoleTable = async () => {
           'ADMIN',
           'ASSET_MANAGER',
           'DEPARTMENT_HEAD',
-          'EMPLOYEE'
+          'EMPLOYEE',
+          'AUDITOR'
         )
       ),
 
@@ -33,6 +34,23 @@ const createUserRoleTable = async () => {
   `;
 
   await db.query(query);
+
+  await db.query(`
+    ALTER TABLE user_roles
+    DROP CONSTRAINT IF EXISTS user_roles_role_check;
+
+    ALTER TABLE user_roles
+    ADD CONSTRAINT user_roles_role_check
+    CHECK (
+      role IN (
+        'ADMIN',
+        'ASSET_MANAGER',
+        'DEPARTMENT_HEAD',
+        'EMPLOYEE',
+        'AUDITOR'
+      )
+    );
+  `);
 };
 
 module.exports = createUserRoleTable;

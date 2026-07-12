@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const { createActivityLog } = require("../utils/activityLogService");
+const { notifyUser } = require("../utils/notificationService");
 const createAuditCycle = async (req, res) => {
     try {
 
@@ -245,6 +246,15 @@ const assignAuditor = async (req, res) => {
             ]
         );
 
+        await notifyUser({
+            user_id: auditor_id,
+            title: "Audit assigned",
+            message: `You have been assigned to audit ${auditResult.rows[0].title}.`,
+            type: "AUDIT_ASSIGNED",
+            reference_type: "AUDIT",
+            reference_id: id
+        });
+
         return res.status(201).json({
             success: true,
             message: "Auditor assigned successfully.",
@@ -387,6 +397,17 @@ const verifyAsset = async (req, res) => {
                 asset_location
             ]
         );
+
+        if (verification_status && verification_status !== "VERIFIED") {
+            await notifyUser({
+                user_id: audit.created_by,
+                title: "Audit discrepancy found",
+                message: `${assetResult.rows[0].name} was marked ${verification_status}.`,
+                type: "AUDIT_DISCREPANCY",
+                reference_type: "AUDIT",
+                reference_id: audit_cycle_id
+            });
+        }
 
         return res.status(201).json({
             success: true,
@@ -585,6 +606,35 @@ const closeAuditCycle = async (req, res) => {
     description:"Audit cycle closed."
 
 });
+
+        const auditors = await db.query(
+            `
+            SELECT auditor_id
+            FROM audit_cycle_auditors
+            WHERE audit_cycle_id = $1
+            `,
+            [id]
+        );
+
+        await Promise.all(
+            auditors.rows.map((auditor) => notifyUser({
+                user_id: auditor.auditor_id,
+                title: "Audit closed",
+                message: `Audit ${audit.title} has been closed.`,
+                type: "AUDIT_CLOSED",
+                reference_type: "AUDIT",
+                reference_id: id
+            }))
+        );
+
+        await notifyUser({
+            user_id: audit.created_by,
+            title: "Audit closed",
+            message: `Audit ${audit.title} has been closed.`,
+            type: "AUDIT_CLOSED",
+            reference_type: "AUDIT",
+            reference_id: id
+        });
 
         return res.status(200).json({
             success: true,

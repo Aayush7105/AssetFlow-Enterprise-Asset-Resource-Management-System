@@ -252,9 +252,6 @@ export default function BookingsPage() {
                     .map((a) => (
                       <option key={a.id} value={a.name}>{a.name}</option>
                     ))}
-                  <option value="Conference Room A">Conference Room A</option>
-                  <option value="Conference Room B">Conference Room B</option>
-                  <option value="Design Studio Lab">Design Studio Lab</option>
                 </select>
               </div>
 
@@ -410,3 +407,4 @@ export default function BookingsPage() {
     </div>
   )
 }
+

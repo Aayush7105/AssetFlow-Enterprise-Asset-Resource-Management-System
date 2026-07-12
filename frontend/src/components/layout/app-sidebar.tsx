@@ -78,9 +78,9 @@ export function AppSidebar() {
   const { logout } = useAuth()
   const router = useRouter()
 
-  const displayName = user?.name || "John Doe"
+  const displayName = user?.name || "Account"
   const displayRole = user?.role || "admin"
-  const orgName = user?.organizationName || "Acme Enterprise"
+  const orgName = user?.organizationName || "AssetFlow"
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -261,7 +261,7 @@ export function AppSidebar() {
               >
                 <div className="px-3 py-2">
                   <p className="text-sm font-medium">{displayName}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email || "john@company.com"}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email || ""}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push(ROUTES.SETTINGS)}>
@@ -282,3 +282,4 @@ export function AppSidebar() {
     </Sidebar>
   )
 }
+

@@ -1,6 +1,7 @@
 const db = require("../config/db");
 
 const { createActivityLog } = require("../utils/activityLogService");
+const { notifyUser, notifyUsersByRole } = require("../utils/notificationService");
 const raiseMaintenanceRequest = async (req, res) => {
     try {
 
@@ -86,6 +87,16 @@ const raiseMaintenanceRequest = async (req, res) => {
                 priority
             ]
         );
+
+        await notifyUsersByRole({
+            roles: ["ADMIN", "ASSET_MANAGER"],
+            exclude_user_id: req.user.id,
+            title: "New maintenance request",
+            message: `${asset.name} needs maintenance: ${issue}`,
+            type: "MAINTENANCE_REQUEST",
+            reference_type: "MAINTENANCE",
+            reference_id: result.rows[0].id
+        });
 
         return res.status(201).json({
             success: true,
@@ -312,6 +323,15 @@ const approveMaintenanceRequest = async (req, res) => {
 
 });
 
+        await notifyUser({
+            user_id: request.reported_by,
+            title: "Maintenance approved",
+            message: "Your maintenance request has been approved.",
+            type: "MAINTENANCE_APPROVED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Maintenance request approved successfully."
@@ -382,6 +402,15 @@ const rejectMaintenanceRequest = async (req, res) => {
                 id
             ]
         );
+
+        await notifyUser({
+            user_id: request.reported_by,
+            title: "Maintenance rejected",
+            message: "Your maintenance request has been rejected.",
+            type: "MAINTENANCE_REJECTED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
 
         return res.status(200).json({
             success: true,
@@ -478,6 +507,24 @@ const assignTechnician = async (req, res) => {
             ]
         );
 
+        await notifyUser({
+            user_id: technician_id,
+            title: "Maintenance assigned",
+            message: "A maintenance request has been assigned to you.",
+            type: "MAINTENANCE_ASSIGNED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
+        await notifyUser({
+            user_id: request.reported_by,
+            title: "Technician assigned",
+            message: "A technician has been assigned to your maintenance request.",
+            type: "MAINTENANCE_ASSIGNED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Technician assigned successfully.",
@@ -543,6 +590,15 @@ const startMaintenance = async (req, res) => {
             `,
             [id]
         );
+
+        await notifyUser({
+            user_id: request.reported_by,
+            title: "Maintenance started",
+            message: "Work has started on your maintenance request.",
+            type: "MAINTENANCE_ASSIGNED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
 
         return res.status(200).json({
             success: true,
@@ -636,6 +692,26 @@ const resolveMaintenance = async (req, res) => {
         );
 
         await db.query("COMMIT");
+
+        await notifyUser({
+            user_id: request.reported_by,
+            title: "Maintenance resolved",
+            message: "Your maintenance request has been resolved.",
+            type: "MAINTENANCE_RESOLVED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
+        if (request.technician_id) {
+            await notifyUser({
+                user_id: request.technician_id,
+                title: "Maintenance resolved",
+                message: "The maintenance request has been marked resolved.",
+                type: "MAINTENANCE_RESOLVED",
+                reference_type: "MAINTENANCE",
+                reference_id: id
+            });
+        }
 
         return res.status(200).json({
             success: true,
