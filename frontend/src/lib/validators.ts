@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 import { ROLES } from "@/lib/constants";
 
 export const loginSchema = z.object({
@@ -17,7 +17,7 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export const registerOrganizationSchema = z.object({
   organizationName: z.string().min(2, "Organization name must be at least 2 characters").max(100, "Organization name must be under 100 characters"),
   industry: z.string().min(1, "Select an industry"),
-  companyEmail: z.string().min(1, "Company email is required").email("Enter a valid email address"),
+  companyEmail: z.string().optional(),
   phone: z.string().optional(),
   country: z.string().min(1, "Select a country"),
   timezone: z.string().min(1, "Select a timezone"),
@@ -25,15 +25,32 @@ export const registerOrganizationSchema = z.object({
 
 export type RegisterOrganizationFormData = z.infer<typeof registerOrganizationSchema>;
 
+const passwordSchema = z.string().superRefine((val, ctx) => {
+  const errors = [];
+  if (val.length < 8) {
+    errors.push("at least 8 characters");
+  }
+  if (!/[A-Z]/.test(val)) {
+    errors.push("one uppercase letter");
+  }
+  if (!/[a-z]/.test(val)) {
+    errors.push("one lowercase letter");
+  }
+  if (!/[0-9]/.test(val)) {
+    errors.push("one number");
+  }
+  if (errors.length > 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Password must contain: ${errors.join(", ")}`,
+    });
+  }
+});
+
 export const registerAdminSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters").max(100, "Full name must be under 100 characters"),
   workEmail: z.string().min(1, "Work email is required").email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
+  password: passwordSchema,
   confirmPassword: z.string().min(1, "Please confirm your password"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -45,13 +62,8 @@ export type RegisterAdminFormData = z.infer<typeof registerAdminSchema>;
 export const registrationSchema = registerOrganizationSchema.extend({
   fullName: z.string().min(2, "Full name must be at least 2 characters").max(100, "Full name must be under 100 characters"),
   workEmail: z.string().min(1, "Work email is required").email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-})
+  password: passwordSchema,
+});
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 
