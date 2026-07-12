@@ -9,6 +9,7 @@ The application follows a clean, modern, and minimalist aesthetic, focusing on a
 - **CSS Framework**: Tailwind CSS
 - **Component Library**: [Shadcn UI](https://ui.shadcn.com/) (built on Radix UI)
 - **Icons**: [Lucide React](https://lucide.dev/)
+- **Library**: [forgeui](https://pro.forgeui.in/)
 
 ## UI Patterns
 
