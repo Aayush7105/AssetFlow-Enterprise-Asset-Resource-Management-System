@@ -1,9 +1,9 @@
-﻿export const ONBOARDING_STEPS = [
-  { id: 1, title: "Company", description: "Your organization details", route: "/company" },
-  { id: 2, title: "Categories", description: "Set up asset categories", route: "/asset-categories" },
-  { id: 3, title: "Departments", description: "Create departments", route: "/departments" },
-  { id: 4, title: "Employees", description: "Add team members", route: "/employees" },
-  { id: 5, title: "Review", description: "Review and confirm", route: "/review" },
+export const ONBOARDING_STEPS = [
+  { id: 1, title: "Company", description: "Your organization details", route: "/onboarding/company" },
+  { id: 2, title: "Categories", description: "Set up asset categories", route: "/onboarding/asset-categories" },
+  { id: 3, title: "Departments", description: "Create departments", route: "/onboarding/departments" },
+  { id: 4, title: "Employees", description: "Add team members", route: "/onboarding/employees" },
+  { id: 5, title: "Review", description: "Review and confirm", route: "/onboarding/review" },
 ] as const
 
 export const INDUSTRY_OPTIONS = [
