@@ -2,6 +2,19 @@ const db = require("../config/db");
 
 const { createActivityLog } = require("../utils/activityLogService");
 const { notifyUser, notifyUsersByRole } = require("../utils/notificationService");
+
+const notifyActorIfDifferent = async (req, excludedUserIds, payload) => {
+    const actorId = req.user && req.user.id;
+    if (!actorId) return;
+
+    const excluded = Array.isArray(excludedUserIds) ? excludedUserIds : [excludedUserIds];
+    if (excluded.filter(Boolean).includes(actorId)) return;
+
+    await notifyUser({
+        ...payload,
+        user_id: actorId
+    });
+};
 const raiseMaintenanceRequest = async (req, res) => {
     try {
 
@@ -93,6 +106,15 @@ const raiseMaintenanceRequest = async (req, res) => {
             exclude_user_id: req.user.id,
             title: "New maintenance request",
             message: `${asset.name} needs maintenance: ${issue}`,
+            type: "MAINTENANCE_REQUEST",
+            reference_type: "MAINTENANCE",
+            reference_id: result.rows[0].id
+        });
+
+        await notifyUser({
+            user_id: req.user.id,
+            title: "Maintenance request submitted",
+            message: `${asset.name} maintenance request was submitted successfully.`,
             type: "MAINTENANCE_REQUEST",
             reference_type: "MAINTENANCE",
             reference_id: result.rows[0].id
@@ -332,6 +354,14 @@ const approveMaintenanceRequest = async (req, res) => {
             reference_id: id
         });
 
+        await notifyActorIfDifferent(req, request.reported_by, {
+            title: "Maintenance approved",
+            message: "Maintenance request approved successfully.",
+            type: "MAINTENANCE_APPROVED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Maintenance request approved successfully."
@@ -407,6 +437,14 @@ const rejectMaintenanceRequest = async (req, res) => {
             user_id: request.reported_by,
             title: "Maintenance rejected",
             message: "Your maintenance request has been rejected.",
+            type: "MAINTENANCE_REJECTED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
+        await notifyActorIfDifferent(req, request.reported_by, {
+            title: "Maintenance rejected",
+            message: "Maintenance request rejected successfully.",
             type: "MAINTENANCE_REJECTED",
             reference_type: "MAINTENANCE",
             reference_id: id
@@ -525,6 +563,14 @@ const assignTechnician = async (req, res) => {
             reference_id: id
         });
 
+        await notifyActorIfDifferent(req, [technician_id, request.reported_by], {
+            title: "Technician assigned",
+            message: "Technician assigned successfully.",
+            type: "MAINTENANCE_ASSIGNED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Technician assigned successfully.",
@@ -595,6 +641,14 @@ const startMaintenance = async (req, res) => {
             user_id: request.reported_by,
             title: "Maintenance started",
             message: "Work has started on your maintenance request.",
+            type: "MAINTENANCE_ASSIGNED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
+        await notifyActorIfDifferent(req, request.reported_by, {
+            title: "Maintenance started",
+            message: "Maintenance work was started successfully.",
             type: "MAINTENANCE_ASSIGNED",
             reference_type: "MAINTENANCE",
             reference_id: id
@@ -713,6 +767,14 @@ const resolveMaintenance = async (req, res) => {
             });
         }
 
+        await notifyActorIfDifferent(req, [request.reported_by, request.technician_id], {
+            title: "Maintenance resolved",
+            message: "Maintenance request was resolved successfully.",
+            type: "MAINTENANCE_RESOLVED",
+            reference_type: "MAINTENANCE",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Maintenance completed successfully."
@@ -741,3 +803,4 @@ module.exports = {
     startMaintenance,
     resolveMaintenance
 };
+

@@ -1,6 +1,19 @@
 const db = require("../config/db");
 const { createActivityLog } = require("../utils/activityLogService");
 const { notifyUser } = require("../utils/notificationService");
+
+const notifyActorIfDifferent = async (req, excludedUserIds, payload) => {
+    const actorId = req.user && req.user.id;
+    if (!actorId) return;
+
+    const excluded = Array.isArray(excludedUserIds) ? excludedUserIds : [excludedUserIds];
+    if (excluded.filter(Boolean).includes(actorId)) return;
+
+    await notifyUser({
+        ...payload,
+        user_id: actorId
+    });
+};
 const createAuditCycle = async (req, res) => {
     try {
 
@@ -78,6 +91,15 @@ const createAuditCycle = async (req, res) => {
                 req.user.id
             ]
         );
+
+        await notifyUser({
+            user_id: req.user.id,
+            title: "Audit cycle created",
+            message: `Audit ${title} was created successfully.`,
+            type: "AUDIT_ASSIGNED",
+            reference_type: "AUDIT",
+            reference_id: result.rows[0].id
+        });
 
         return res.status(201).json({
             success: true,
@@ -255,6 +277,14 @@ const assignAuditor = async (req, res) => {
             reference_id: id
         });
 
+        await notifyActorIfDifferent(req, auditor_id, {
+            title: "Auditor assigned",
+            message: `Auditor was assigned to ${auditResult.rows[0].title}.`,
+            type: "AUDIT_ASSIGNED",
+            reference_type: "AUDIT",
+            reference_id: id
+        });
+
         return res.status(201).json({
             success: true,
             message: "Auditor assigned successfully.",
@@ -408,6 +438,14 @@ const verifyAsset = async (req, res) => {
                 reference_id: audit_cycle_id
             });
         }
+
+        await notifyActorIfDifferent(req, audit.created_by, {
+            title: "Asset verified",
+            message: `${assetResult.rows[0].name} was marked ${verification_status}.`,
+            type: verification_status && verification_status !== "VERIFIED" ? "AUDIT_DISCREPANCY" : "AUDIT_ASSIGNED",
+            reference_type: "AUDIT",
+            reference_id: audit_cycle_id
+        });
 
         return res.status(201).json({
             success: true,
@@ -663,3 +701,4 @@ module.exports = {
     getAuditCycleById,
     closeAuditCycle
 };
+

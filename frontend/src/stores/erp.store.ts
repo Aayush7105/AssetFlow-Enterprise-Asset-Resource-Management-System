@@ -1,5 +1,7 @@
 import { create } from "zustand"
 import { apiRequest } from "@/lib/api"
+import { notificationService } from "@/modules/notifications/services"
+import { useNotificationStore } from "@/stores/notification.store"
 
 export interface Asset {
   id: string
@@ -649,7 +651,7 @@ export const useERPStore = create<ERPState>((set, get) => ({
   isCommandPaletteOpen: false,
   setCommandPaletteOpen: (isCommandPaletteOpen) => set({ isCommandPaletteOpen }),
   hydrateFromBackend: async () => {
-    const [assets, departments, categories, users, allocations, bookings, maintenance, audits, activities] = await Promise.all([
+    const [assets, departments, categories, users, allocations, bookings, maintenance, audits, activities, notificationSummary] = await Promise.all([
       apiRequest<BackendRecord[]>("/assets"),
       apiRequest<BackendRecord[]>("/departments"),
       apiRequest<BackendRecord[]>("/asset-categories"),
@@ -659,6 +661,7 @@ export const useERPStore = create<ERPState>((set, get) => ({
       apiRequest<BackendRecord[]>("/maintenance"),
       apiRequest<BackendRecord[]>("/audits"),
       apiRequest<BackendRecord[]>("/activity-logs").catch(() => []),
+      notificationService.getNotifications().catch(() => null),
     ])
 
     set({
@@ -672,5 +675,11 @@ export const useERPStore = create<ERPState>((set, get) => ({
       audits: audits.map(mapAudit),
       activities: activities.map(mapActivity),
     })
+
+    if (notificationSummary) {
+      useNotificationStore.getState().setUnreadCount(notificationSummary.unread)
+    }
   },
 }))
+
+

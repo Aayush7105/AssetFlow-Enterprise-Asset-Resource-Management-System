@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Asset } from "@/stores/erp.store"
 import { useToast } from "@/hooks/use-toast"
+import { useAuthStore } from "@/stores/auth.store"
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,8 @@ import {
 export default function AssetsPage() {
   const { toast } = useToast()
   const { assets, employees, departments, categories, addAsset, updateAsset, deleteAsset, allocateAsset, addMaintenanceRequest, transferAsset } = useERPStore()
+  const user = useAuthStore((state) => state.user)
+  const canManageAssets = user?.role === "admin" || user?.role === "asset_manager"
 
   // Table state
   const [search, setSearch] = useState("")
@@ -334,12 +337,12 @@ export default function AssetsPage() {
       <PageHeader
         title="Asset Directory"
         description="Comprehensive directory of enterprise resources and asset assignments"
-        actions={
+        actions={canManageAssets ? (
           <Button onClick={() => { resetFormData(); setIsRegisterOpen(true) }} className="shadow-xs hover:-translate-y-px transition-all">
             <Plus className="size-4 mr-1.5" />
             Register Asset
           </Button>
-        }
+        ) : null}
       />
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center justify-between">
@@ -372,7 +375,7 @@ export default function AssetsPage() {
             <option value="Disposed">Disposed</option>
           </select>
 
-          {selectedIds.length > 0 && (
+          {canManageAssets && selectedIds.length > 0 && (
             <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="h-9">
               <Trash2 className="size-4 mr-1" />
               Delete ({selectedIds.length})
@@ -386,14 +389,16 @@ export default function AssetsPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-border bg-muted/20 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                <th className="p-4 w-12 text-center">
-                  <input
-                    type="checkbox"
-                    checked={paginatedAssets.length > 0 && paginatedAssets.every((a) => selectedIds.includes(a.id))}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="rounded border-border size-3.5 accent-foreground cursor-pointer"
-                  />
-                </th>
+                {canManageAssets && (
+                  <th className="p-4 w-12 text-center">
+                    <input
+                      type="checkbox"
+                      checked={paginatedAssets.length > 0 && paginatedAssets.every((a) => selectedIds.includes(a.id))}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="rounded border-border size-3.5 accent-foreground cursor-pointer"
+                    />
+                  </th>
+                )}
                 <th className="p-4 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("assetTag")}>
                   Tag {sortField === "assetTag" && (sortOrder === "asc" ? "↑" : "↓")}
                 </th>
@@ -420,14 +425,16 @@ export default function AssetsPage() {
                       isSelected ? "bg-accent/10" : ""
                     }`}
                   >
-                    <td className="p-4 text-center">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleSelectRow(asset.id, e.target.checked)}
-                        className="rounded border-border size-3.5 accent-foreground cursor-pointer"
-                      />
-                    </td>
+                    {canManageAssets && (
+                      <td className="p-4 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handleSelectRow(asset.id, e.target.checked)}
+                          className="rounded border-border size-3.5 accent-foreground cursor-pointer"
+                        />
+                      </td>
+                    )}
                     <td className="p-4 font-mono text-[12px] font-medium text-muted-foreground">{asset.assetTag}</td>
                     <td className="p-4 text-[13px] font-medium text-foreground">{asset.name}</td>
                     <td className="p-4 text-[13px] text-muted-foreground">{asset.category}</td>
@@ -460,29 +467,33 @@ export default function AssetsPage() {
                             <Eye className="size-3.5 mr-2" />
                             View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => startEdit(asset)}>
-                            <Edit2 className="size-3.5 mr-2" />
-                            Edit Asset
-                          </DropdownMenuItem>
-                          {asset.status === "Available" && (
-                            <DropdownMenuItem onClick={() => startAllocate(asset)}>
-                              <UserCheck className="size-3.5 mr-2" />
-                              Allocate
-                            </DropdownMenuItem>
-                          )}
-                          {asset.status === "Allocated" && (
+                          {canManageAssets && (
                             <>
-                              <DropdownMenuItem onClick={() => startTransfer(asset)}>
-                                <ArrowRightLeft className="size-3.5 mr-2" />
-                                Transfer Assignment
+                              <DropdownMenuItem onClick={() => startEdit(asset)}>
+                                <Edit2 className="size-3.5 mr-2" />
+                                Edit Asset
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => {
-                                updateAsset(asset.id, { status: "Available", assignedEmployee: "", department: "" })
-                                toast({ title: "Asset Returned", description: `Returned "${asset.name}" to inventory.` })
-                              }}>
-                                <Package className="size-3.5 mr-2" />
-                                Return Asset
-                              </DropdownMenuItem>
+                              {asset.status === "Available" && (
+                                <DropdownMenuItem onClick={() => startAllocate(asset)}>
+                                  <UserCheck className="size-3.5 mr-2" />
+                                  Allocate
+                                </DropdownMenuItem>
+                              )}
+                              {asset.status === "Allocated" && (
+                                <>
+                                  <DropdownMenuItem onClick={() => startTransfer(asset)}>
+                                    <ArrowRightLeft className="size-3.5 mr-2" />
+                                    Transfer Assignment
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => {
+                                    updateAsset(asset.id, { status: "Available", assignedEmployee: "", department: "" })
+                                    toast({ title: "Asset Returned", description: `Returned "${asset.name}" to inventory.` })
+                                  }}>
+                                    <Package className="size-3.5 mr-2" />
+                                    Return Asset
+                                  </DropdownMenuItem>
+                                </>
+                              )}
                             </>
                           )}
                           {asset.status !== "Under Maintenance" && (
@@ -491,14 +502,18 @@ export default function AssetsPage() {
                               Raise Maintenance
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => { setActiveAsset(asset); setIsDeleteOpen(true) }}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="size-3.5 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
+                          {canManageAssets && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => { setActiveAsset(asset); setIsDeleteOpen(true) }}
+                                className="text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="size-3.5 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
@@ -1034,3 +1049,4 @@ export default function AssetsPage() {
     </div>
   )
 }
+
