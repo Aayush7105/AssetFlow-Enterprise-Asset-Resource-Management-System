@@ -15,7 +15,7 @@ function getDirection(prev: string, current: string): number {
   return 1
 }
 
-const ease = [0.25, 0.1, 0.25, 1] as const
+const ease = "easeInOut" as const
 
 function slideVariants(direction: number, slide: number, blur: number, enter: number) {
   return {
@@ -30,14 +30,14 @@ function slideVariants(direction: number, slide: number, blur: number, enter: nu
       x: 0,
       scale: 1,
       filter: "blur(0px)",
-      transition: { duration: enter, ease: ease as unknown as number[] },
+      transition: { duration: enter, ease },
     },
     exit: {
       opacity: 0,
       x: -direction * slide,
       scale: 1 - (slide > 0 ? 0.02 : 0),
       filter: `blur(${blur}px)`,
-      transition: { duration: Math.max(0.2, enter * 0.6), ease: ease as unknown as number[] },
+      transition: { duration: Math.max(0.2, enter * 0.6), ease },
     },
   }
 }
@@ -45,8 +45,8 @@ function slideVariants(direction: number, slide: number, blur: number, enter: nu
 function fadeVariants(enter: number, exit: number) {
   return {
     initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: enter, ease: ease as unknown as number[] } },
-    exit: { opacity: 0, transition: { duration: exit, ease: ease as unknown as number[] } },
+    animate: { opacity: 1, transition: { duration: enter, ease } },
+    exit: { opacity: 0, transition: { duration: exit, ease } },
   }
 }
 

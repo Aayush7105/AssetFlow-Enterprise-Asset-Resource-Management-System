@@ -1,11 +1,12 @@
-﻿"use client"
+"use client"
 
+import { type ComponentProps } from "react"
 import { cn } from "@/lib/utils"
-import { Badge, type BadgeProps } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge"
 
 type StatusVariant = "success" | "warning" | "danger" | "info" | "neutral" | "default"
 
-interface StatusChipProps extends Omit<BadgeProps, "variant"> {
+interface StatusChipProps extends Omit<ComponentProps<typeof Badge>, "variant"> {
   status: StatusVariant
   label: string
   dot?: boolean

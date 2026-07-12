@@ -45,7 +45,7 @@ import {
   CheckCircle2,
 } from "lucide-react"
 
-const stepEase = [0.25, 0.1, 0.25, 1]
+const stepEase = "easeInOut" as const
 
 function stepVariants(direction: number) {
   return {
@@ -58,13 +58,13 @@ function stepVariants(direction: number) {
       opacity: 1,
       x: 0,
       filter: "blur(0px)",
-      transition: { duration: 0.4, ease: stepEase as unknown as number[] },
+      transition: { duration: 0.4, ease: stepEase },
     },
     exit: {
       opacity: 0,
       x: -direction * 40,
       filter: "blur(4px)",
-      transition: { duration: 0.25, ease: stepEase as unknown as number[] },
+      transition: { duration: 0.25, ease: stepEase },
     },
   }
 }

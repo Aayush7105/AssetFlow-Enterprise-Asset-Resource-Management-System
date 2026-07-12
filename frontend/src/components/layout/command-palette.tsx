@@ -106,7 +106,7 @@ export function CommandPalette() {
   // Dynamic filter lists based on search term
   const query = debouncedSearch.toLowerCase().trim()
 
-  const filterItems = <T extends any>(
+  const filterItems = <T,>(
     items: T[],
     checkFn: (item: T) => boolean
   ) => {
