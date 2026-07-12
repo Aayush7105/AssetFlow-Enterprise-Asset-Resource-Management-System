@@ -5,8 +5,17 @@ const db = require("./config/db");
 const createUserTable = require("./models/User");
 const createUserRoleTable = require("./models/UserRole");
 const createDepartmentTable = require("./models/Department");
-const addConstraints = require("./models/constraints");
-
+const addConstraints = require("./models/Constraints");
+const assetCategoryTable = require("./models/assetCategory");
+const assetTable = require("./models/asset");
+const allocationTable = require("./models/allocation");
+const createAssetCategoryTable = require("./models/AssetCategory");
+const createResourceBookingTable = require("./models/ResourceBooking");
+const createMaintenanceRequestTable = require("./models/MaintenanceRequest");
+const createAuditCycleTable = require("./models/AuditCycle");
+const createAuditItemTable = require("./models/AuditItem");
+const createNotificationTable = require("./models/Notification");
+const createActivityLogTable = require("./models/ActivityLog");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -21,6 +30,26 @@ db.connect().then(async() => {
     console.log("Department table created or already exists");
     await addConstraints();
     console.log("Constraints added or already exist");
+    await assetCategoryTable();
+    console.log("AssetCategory table created or already exists");
+    await assetTable();
+    console.log("Asset table created or already exists");
+    await allocationTable();
+    console.log("Allocation table created or already exists");
+    await createAssetCategoryTable();
+    console.log("AssetCategory table created or already exists");
+    await createResourceBookingTable();
+    console.log("ResourceBookings table created or already exists");
+    await createMaintenanceRequestTable();
+    console.log("Maintenance table created or already exists");
+    await createAuditCycleTable();
+    console.log("AuditCycle table created or already exists");
+    await createAuditItemTable();
+    console.log("AuditItem table created or already exists");
+    await createNotificationTable();
+    console.log("Notification table created or already exists");
+    await createActivityLogTable();
+    console.log("ActivityLog table created or already exists");
 })
 .catch((err) => {
     console.error("Error connecting to the database", err);
