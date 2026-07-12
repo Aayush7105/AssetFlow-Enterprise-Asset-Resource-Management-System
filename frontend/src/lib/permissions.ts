@@ -24,10 +24,10 @@ export const PERMISSIONS: PermissionMap = {
     "notifications",
   ],
   employee: ["dashboard", "assets", "bookings", "notifications"],
-  auditor: ["dashboard", "assets", "audits", "reports", "notifications"],
 };
 
 export function hasPermission(role: UserRole, module: string): boolean {
+  if (module === "help" || module === "settings") return true;
   const allowed = PERMISSIONS[role];
   if (allowed.includes("*")) return true;
   return allowed.includes(module);

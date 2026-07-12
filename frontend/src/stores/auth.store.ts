@@ -1,4 +1,4 @@
-﻿import { create } from "zustand"
+import { create } from "zustand"
 import { type UserRole } from "@/lib/constants"
 
 interface User {
@@ -19,6 +19,7 @@ interface AuthState {
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
   logout: () => void
+  updateOrganization: (name: string) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -28,4 +29,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUser: (user) => set({ user, isAuthenticated: !!user }),
   setLoading: (isLoading) => set({ isLoading }),
   logout: () => set({ user: null, isAuthenticated: false }),
+  updateOrganization: (name) => set((state) => ({
+    user: state.user ? { ...state.user, organizationName: name } : null
+  })),
 }))

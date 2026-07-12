@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
+import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Employee } from "@/stores/erp.store"
@@ -21,7 +22,18 @@ import {
   Send,
   XCircle,
   CheckCircle,
+  User,
+  Monitor,
+  Building,
+  Shield,
 } from "lucide-react"
+
+const ROLE_OPTIONS = [
+  { value: "employee", label: "Employee", description: "Standard employee with basic access", icon: <User className="size-3.5" /> },
+  { value: "asset_manager", label: "Asset Manager", description: "Manage assets and allocations", icon: <Monitor className="size-3.5" /> },
+  { value: "department_head", label: "Department Head", description: "Manage department operations", icon: <Building className="size-3.5" /> },
+  { value: "admin", label: "Admin", description: "Full system access", icon: <Shield className="size-3.5" /> },
+]
 
 export default function EmployeesPage() {
   const { toast } = useToast()
@@ -86,7 +98,7 @@ export default function EmployeesPage() {
     if (!inviteForm.name || !inviteForm.email || !inviteForm.department) return
 
     inviteEmployee(inviteForm)
-    toast({ title: "Employee Invited", description: `Successfully sent invitation to ${inviteForm.name}.` })
+    toast({ title: "Employee Added", description: `${inviteForm.name} has been added to the directory.` })
     setIsInviteOpen(false)
     setInviteForm({ name: "", email: "", department: "", role: "employee", status: "Active" })
   }
@@ -151,7 +163,7 @@ export default function EmployeesPage() {
         actions={
           <Button onClick={() => setIsInviteOpen(true)} className="shadow-xs hover:-translate-y-px transition-all">
             <Plus className="size-4 mr-1.5" />
-            Invite Employee
+            Add Employee
           </Button>
         }
       />
@@ -311,11 +323,11 @@ export default function EmployeesPage() {
         </div>
       </div>
 
-      {/* INVITE EMPLOYEE DIALOG */}
+      {/* ADD EMPLOYEE DIALOG */}
       <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Invite Employee</DialogTitle>
+            <DialogTitle>Add Employee</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleInviteSubmit} className="space-y-4 text-[13px]">
             <div className="grid gap-3.5">
@@ -346,32 +358,24 @@ export default function EmployeesPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Department</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={departments.map((d) => ({ value: d.name, label: d.name }))}
                     value={inviteForm.department}
-                    onChange={(e) => setInviteForm({ ...inviteForm, department: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="">Select Department</option>
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(val) => setInviteForm({ ...inviteForm, department: val })}
+                    placeholder="Select Department"
+                    searchPlaceholder="Search departments..."
+                  />
                 </div>
 
                 <div>
                   <label className="text-muted-foreground block mb-1">Role Type</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={ROLE_OPTIONS}
                     value={inviteForm.role}
-                    onChange={(e) => setInviteForm({ ...inviteForm, role: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="employee">Employee</option>
-                    <option value="asset_manager">Asset Manager</option>
-                    <option value="department_head">Department Head</option>
-                    <option value="auditor">Auditor</option>
-                  </select>
+                    onValueChange={(val) => setInviteForm({ ...inviteForm, role: val })}
+                    placeholder="Select Role"
+                    searchPlaceholder="Search roles..."
+                  />
                 </div>
               </div>
             </div>
@@ -381,7 +385,7 @@ export default function EmployeesPage() {
                 Cancel
               </Button>
               <Button type="submit">
-                Invite Employee
+                Add Employee
               </Button>
             </DialogFooter>
           </form>
@@ -421,31 +425,24 @@ export default function EmployeesPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Department</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={departments.map((d) => ({ value: d.name, label: d.name }))}
                     value={editForm.department}
-                    onChange={(e) => setEditForm({ ...editForm, department: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(val) => setEditForm({ ...editForm, department: val })}
+                    placeholder="Select Department"
+                    searchPlaceholder="Search departments..."
+                  />
                 </div>
 
                 <div>
                   <label className="text-muted-foreground block mb-1">Role Type</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={ROLE_OPTIONS}
                     value={editForm.role}
-                    onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="employee">Employee</option>
-                    <option value="asset_manager">Asset Manager</option>
-                    <option value="department_head">Department Head</option>
-                    <option value="auditor">Auditor</option>
-                  </select>
+                    onValueChange={(val) => setEditForm({ ...editForm, role: val })}
+                    placeholder="Select Role"
+                    searchPlaceholder="Search roles..."
+                  />
                 </div>
               </div>
             </div>

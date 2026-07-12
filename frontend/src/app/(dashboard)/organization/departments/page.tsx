@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
+import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Department } from "@/stores/erp.store"
@@ -248,31 +249,24 @@ export default function DepartmentsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Parent Department</label>
-                  <select
+                  <ComboSelect
+                    options={[{ value: "None", label: "None" }, ...departments.map((d) => ({ value: d.name, label: d.name }))]}
                     value={createForm.parentDepartment}
-                    onChange={(e) => setCreateForm({ ...createForm, parentDepartment: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="None">None</option>
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(val) => setCreateForm({ ...createForm, parentDepartment: val })}
+                    placeholder="Select Parent"
+                    searchPlaceholder="Search departments..."
+                  />
                 </div>
 
                 <div>
                   <label className="text-muted-foreground block mb-1">Department Head</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={employees.map((e) => ({ value: e.name, label: e.name, description: e.department }))}
                     value={createForm.head}
-                    onChange={(e) => setCreateForm({ ...createForm, head: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="">Select Head</option>
-                    {employees.map((e) => (
-                      <option key={e.id} value={e.name}>{e.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(val) => setCreateForm({ ...createForm, head: val })}
+                    placeholder="Select Head"
+                    searchPlaceholder="Search employees..."
+                  />
                 </div>
               </div>
             </div>
@@ -311,32 +305,24 @@ export default function DepartmentsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Parent Department</label>
-                  <select
+                  <ComboSelect
+                    options={[{ value: "None", label: "None" }, ...departments.filter((d) => d.id !== activeDept?.id).map((d) => ({ value: d.name, label: d.name }))]}
                     value={editForm.parentDepartment}
-                    onChange={(e) => setEditForm({ ...editForm, parentDepartment: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="None">None</option>
-                    {departments
-                      .filter((d) => d.id !== activeDept?.id)
-                      .map((d) => (
-                        <option key={d.id} value={d.name}>{d.name}</option>
-                      ))}
-                  </select>
+                    onValueChange={(val) => setEditForm({ ...editForm, parentDepartment: val })}
+                    placeholder="Select Parent"
+                    searchPlaceholder="Search departments..."
+                  />
                 </div>
 
                 <div>
                   <label className="text-muted-foreground block mb-1">Department Head</label>
-                  <select
-                    required
+                  <ComboSelect
+                    options={employees.map((e) => ({ value: e.name, label: e.name, description: e.department }))}
                     value={editForm.head}
-                    onChange={(e) => setEditForm({ ...editForm, head: e.target.value })}
-                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                  >
-                    {employees.map((e) => (
-                      <option key={e.id} value={e.name}>{e.name}</option>
-                    ))}
-                  </select>
+                    onValueChange={(val) => setEditForm({ ...editForm, head: val })}
+                    placeholder="Select Head"
+                    searchPlaceholder="Search employees..."
+                  />
                 </div>
               </div>
             </div>

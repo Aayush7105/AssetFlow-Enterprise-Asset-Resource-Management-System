@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
+import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Booking } from "@/stores/erp.store"
@@ -240,22 +241,20 @@ export default function BookingsPage() {
             <div className="grid gap-3.5">
               <div>
                 <label className="text-muted-foreground block mb-1">Select Shared Resource</label>
-                <select
-                  required
+                <ComboSelect
+                  options={[
+                    ...assets
+                      .filter((a) => a.sharedResource)
+                      .map((a) => ({ value: a.name, label: a.name, description: "Shared Device" })),
+                    { value: "Conference Room A", label: "Conference Room A", description: "Shared Space" },
+                    { value: "Conference Room B", label: "Conference Room B", description: "Shared Space" },
+                    { value: "Design Studio Lab", label: "Design Studio Lab", description: "Lab Facility" },
+                  ]}
                   value={bookForm.resource}
-                  onChange={(e) => setBookForm({ ...bookForm, resource: e.target.value })}
-                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
-                >
-                  <option value="">Select Item</option>
-                  {assets
-                    .filter((a) => a.sharedResource)
-                    .map((a) => (
-                      <option key={a.id} value={a.name}>{a.name}</option>
-                    ))}
-                  <option value="Conference Room A">Conference Room A</option>
-                  <option value="Conference Room B">Conference Room B</option>
-                  <option value="Design Studio Lab">Design Studio Lab</option>
-                </select>
+                  onValueChange={(val) => setBookForm({ ...bookForm, resource: val })}
+                  placeholder="Select Shared Resource"
+                  searchPlaceholder="Search resources..."
+                />
               </div>
 
               <div className="grid grid-cols-3 gap-3">

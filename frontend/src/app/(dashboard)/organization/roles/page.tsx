@@ -29,12 +29,6 @@ const rolesData = [
     permissions: ["View Personal Assets", "Book Resources", "Raise Personal Maintenance Tickets", "View Notifications"],
     color: "border-l-emerald-500",
   },
-  {
-    name: "Auditor",
-    description: "Compliance role focused on auditing asset logs, checking serial number verification cycles, and auditing reports.",
-    permissions: ["Read-Only Asset Access", "Perform Audits", "Export Audits", "View Reports", "View System Compliance"],
-    color: "border-l-purple-500",
-  },
 ]
 
 export default function RolesPage() {

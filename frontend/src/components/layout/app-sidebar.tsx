@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +34,8 @@ import {
   FolderOpen,
   ChevronsUpDown,
   LogOut,
+  User as UserIcon,
+  HelpCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ROUTES } from "@/lib/constants"
@@ -41,6 +44,7 @@ import { useAuthStore } from "@/stores/auth.store"
 import { hasPermission } from "@/lib/permissions"
 import { useAuth } from "@/modules/auth/hooks"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +52,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const mainMenuItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: ROUTES.DASHBOARD, module: "dashboard" },
@@ -96,7 +108,10 @@ export function AppSidebar() {
     hasPermission(displayRole, item.module)
   )
 
-  const handleLogout = async () => {
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
+
+  const handleLogoutConfirm = async () => {
+    setIsLogoutOpen(false)
     await logout()
     router.push(ROUTES.LOGIN)
   }
@@ -254,22 +269,33 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl border border-border/60 shadow-lg"
                 side="top"
                 align="start"
                 sideOffset={4}
               >
-                <div className="px-3 py-2">
-                  <p className="text-sm font-medium">{displayName}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email || "john@company.com"}</p>
+                <div className="px-3 py-2 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">{displayName}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email || "john@company.com"}</p>
+                  </div>
+                  {isAdmin && (
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider bg-foreground/10 text-foreground">
+                      Admin
+                    </span>
+                  )}
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push(ROUTES.SETTINGS)}>
-                  <Settings className="mr-2 size-4" />
-                  Settings
+                <DropdownMenuItem onClick={() => router.push(ROUTES.SETTINGS)} className="h-9 px-3 rounded-lg text-[13px] hover:bg-accent/50 cursor-pointer">
+                  <UserIcon className="mr-2 size-4 text-muted-foreground" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(ROUTES.HELP)} className="h-9 px-3 rounded-lg text-[13px] hover:bg-accent/50 cursor-pointer">
+                  <HelpCircle className="mr-2 size-4 text-muted-foreground" />
+                  Help & Support
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={() => setIsLogoutOpen(true)} className="h-9 px-3 rounded-lg text-[13px] text-destructive focus:text-destructive hover:bg-destructive/10 cursor-pointer">
                   <LogOut className="mr-2 size-4" />
                   Log out
                 </DropdownMenuItem>
@@ -279,6 +305,26 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
+
+      {/* LOGOUT CONFIRM DIALOG */}
+      <Dialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
+        <DialogContent className="max-w-sm rounded-xl p-6">
+          <DialogHeader className="space-y-1.5">
+            <DialogTitle className="text-lg font-semibold tracking-tight text-foreground">Sign out?</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground leading-normal">
+              Are you sure you want to sign out of AssetFlow?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-row justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setIsLogoutOpen(false)} className="h-9 text-xs px-4">
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleLogoutConfirm} className="h-9 text-xs px-4">
+              Sign Out
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   )
 }

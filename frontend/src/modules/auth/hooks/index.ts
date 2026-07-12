@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useAuthStore } from "@/stores/auth.store"
 import { toast } from "sonner"
@@ -40,16 +40,6 @@ export const DEMO_USERS = [
     password: "EmployeePassword123",
     name: "Emily Employee",
     role: "employee" as const,
-    organizationId: "org-1",
-    organizationName: "Acme Enterprise",
-    isOnboarded: true,
-  },
-  {
-    id: "demo-auditor-id",
-    email: "auditor@assetflow.com",
-    password: "AuditorPassword123",
-    name: "Audrey Auditor",
-    role: "auditor" as const,
     organizationId: "org-1",
     organizationName: "Acme Enterprise",
     isOnboarded: true,
