@@ -8,7 +8,7 @@ export const DEMO_USERS = [
   {
     id: "demo-admin-id",
     email: "admin@assetflow.com",
-    password: "AdminPassword123",
+    password: "admin123",
     name: "Alex Admin",
     role: "admin" as const,
     organizationId: "org-1",
@@ -68,7 +68,7 @@ export function useAuth() {
       toast.success(`Welcome back, ${user.name}! Logged in as ${user.role}.`)
       return user
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Invalid email or password.")
+      toast.error("Unable to sign in. Please try again.")
       throw error
     }
   }

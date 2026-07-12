@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/input"
@@ -15,15 +15,25 @@ import {
 } from "@/components/ui/form"
 import { ROUTES } from "@/lib/constants"
 import { loginSchema, type LoginFormData } from "@/lib/validators"
-import { useAuth, DEMO_USERS } from "@/modules/auth/hooks"
+import { useAuth } from "@/modules/auth/hooks"
 import { useRouter } from "next/navigation"
 import { Loader2, Eye, EyeOff, ArrowRight } from "lucide-react"
+import { useAuthStore } from "@/stores/auth.store"
 
 export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isLoading = useAuthStore((state) => state.isLoading)
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace(ROUTES.DASHBOARD)
+    }
+  }, [isLoading, isAuthenticated, router])
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -35,9 +45,27 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true)
+    
+    // Minimum loading duration to prevent jarring visual flash
+    const minTimePromise = new Promise((resolve) => setTimeout(resolve, 1500))
+    
+    // Briefly delay showing the fullscreen loader overlay so the button's
+    // spinner loading state is visible to the user first.
+    const showLoaderTimeout = setTimeout(() => {
+      useAuthStore.getState().setAuthenticating(true)
+    }, 200)
+
     try {
-      await login(data)
+      await Promise.all([
+        login(data),
+        minTimePromise,
+      ])
+      
+      clearTimeout(showLoaderTimeout)
       router.push(ROUTES.DASHBOARD)
+    } catch (error) {
+      clearTimeout(showLoaderTimeout)
+      useAuthStore.getState().setAuthenticating(false)
     } finally {
       setIsSubmitting(false)
     }
@@ -153,29 +181,6 @@ export default function LoginPage() {
           </Button>
         </form>
       </Form>
-
-      <div className="space-y-3 pt-4 border-t border-border/50">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-          Quick Demo Accounts (Click to log in)
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {DEMO_USERS.map((user) => (
-            <button
-              key={user.role}
-              type="button"
-              onClick={() => {
-                form.setValue("email", user.email)
-                form.setValue("password", user.password)
-                form.handleSubmit(onSubmit)()
-              }}
-              className="flex flex-col text-left p-3 rounded-lg border border-border/80 bg-muted/20 hover:bg-accent/50 hover:border-border/100 hover:scale-[1.02] cursor-pointer transition-all duration-200"
-            >
-              <span className="text-xs font-semibold text-foreground truncate">{user.name}</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-medium mt-0.5">{user.role.replace("_", " ")}</span>
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="space-y-4 pt-2">
         <p className="text-xs text-center text-muted-foreground/70">

@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -33,6 +33,7 @@ import { useAuth } from "@/modules/auth/hooks"
 import { COUNTRIES, TIMEZONES } from "@/modules/auth/constants"
 import { INDUSTRY_OPTIONS } from "@/modules/onboarding/constants"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Loader2,
   ArrowLeft,
@@ -133,7 +134,7 @@ export default function RegisterCompanyPage() {
       await registerOrganization({
         organizationName: orgData.organizationName,
         industry: orgData.industry,
-        companyEmail: orgData.companyEmail,
+        companyEmail: adminData.workEmail,
         phone: orgData.phone || undefined,
         country: orgData.country,
         timezone: orgData.timezone,
@@ -143,6 +144,8 @@ export default function RegisterCompanyPage() {
       })
 
       router.push(ROUTES.ONBOARDING)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to register organization.")
     } finally {
       setIsSubmitting(false)
     }
@@ -298,17 +301,19 @@ export default function RegisterCompanyPage() {
 
                     <FormField
                       control={orgForm.control}
-                      name="companyEmail"
+                      name="phone"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">
-                            Company Email
+                            Phone{" "}
+                            <span className="text-muted-foreground/50 font-normal">
+                              (optional)
+                            </span>
                           </FormLabel>
                           <FormControl>
                             <Input
-                              type="email"
-                              placeholder="admin@company.com"
-                              autoComplete="email"
+                              type="tel"
+                              placeholder="+1 (555) 000-0000"
                               disabled={isSubmitting}
                               className="h-11"
                               {...field}
@@ -319,31 +324,6 @@ export default function RegisterCompanyPage() {
                       )}
                     />
                   </div>
-
-                  <FormField
-                    control={orgForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">
-                          Phone{" "}
-                          <span className="text-muted-foreground/50 font-normal">
-                            (optional)
-                          </span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="tel"
-                            placeholder="+1 (555) 000-0000"
-                            disabled={isSubmitting}
-                            className="h-11"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <FormField

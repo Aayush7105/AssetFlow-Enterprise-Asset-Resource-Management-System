@@ -294,62 +294,16 @@ interface ERPState {
 }
 
 export const useERPStore = create<ERPState>((set) => ({
-  assets: [
-    { id: "1", name: 'MacBook Pro 16"', category: "Laptops", serialNumber: "C02F28H1MD6M", assetTag: "AST-001", department: "Engineering", assignedEmployee: "Sarah Chen", location: "HQ - Floor 3", purchaseDate: "2025-01-15", condition: "GOOD", status: "Allocated", sharedResource: false },
-    { id: "2", name: "Dell XPS 15", category: "Laptops", serialNumber: "38H29G1", assetTag: "AST-002", department: "Design", assignedEmployee: "Mike Ross", location: "HQ - Floor 2", purchaseDate: "2025-02-10", condition: "NEW", status: "Allocated", sharedResource: false },
-    { id: "3", name: "HP LaserJet Pro", category: "Printers", serialNumber: "JPB8H2718", assetTag: "AST-003", department: "IT Support", assignedEmployee: "", location: "HQ - Copy Room", purchaseDate: "2024-06-18", condition: "FAIR", status: "Under Maintenance", sharedResource: true },
-    { id: "4", name: "Standing Desk", category: "Furniture", serialNumber: "SD-92817", assetTag: "AST-004", department: "Marketing", assignedEmployee: "Lisa Park", location: "HQ - Floor 4", purchaseDate: "2024-08-20", condition: "GOOD", status: "Allocated", sharedResource: false },
-    { id: "5", name: "Dell 27\" Monitor", category: "Monitors", serialNumber: "CN-098172", assetTag: "AST-005", department: "Engineering", assignedEmployee: "John Doe", location: "HQ - Floor 3", purchaseDate: "2025-01-20", condition: "NEW", status: "Available", sharedResource: false },
-    { id: "6", name: "Conference Room A AV", category: "AV Equipment", serialNumber: "AV-88172", assetTag: "AST-006", department: "Product", assignedEmployee: "", location: "HQ - Conf Room A", purchaseDate: "2024-11-12", condition: "GOOD", status: "Available", sharedResource: true },
-  ],
-  employees: [
-    { id: "1", name: "Sarah Chen", email: "sarah.chen@company.com", department: "Engineering", role: "employee", status: "Active", invitationStatus: "Accepted" },
-    { id: "2", name: "Mike Ross", email: "mike.ross@company.com", department: "Design", role: "employee", status: "Active", invitationStatus: "Accepted" },
-    { id: "3", name: "Lisa Park", email: "lisa.park@company.com", department: "Marketing", role: "employee", status: "Active", invitationStatus: "Accepted" },
-    { id: "4", name: "John Doe", email: "john.doe@company.com", department: "Engineering", role: "employee", status: "Active", invitationStatus: "Accepted" },
-    { id: "5", name: "Alex Smith", email: "alex.smith@company.com", department: "Operations", role: "asset_manager", status: "Active", invitationStatus: "Accepted" },
-    { id: "6", name: "Emily Watson", email: "emily.watson@company.com", department: "Engineering", role: "department_head", status: "Active", invitationStatus: "Accepted" },
-    { id: "7", name: "Robert Taylor", email: "robert.t@company.com", department: "Finance", role: "auditor", status: "Active", invitationStatus: "Pending" },
-  ],
-  departments: [
-    { id: "1", name: "Engineering", parentDepartment: "None", head: "Emily Watson", employeeCount: 48, status: "Active" },
-    { id: "2", name: "Marketing", parentDepartment: "None", head: "Lisa Park", employeeCount: 23, status: "Active" },
-    { id: "3", name: "Operations", parentDepartment: "None", head: "Alex Smith", employeeCount: 35, status: "Active" },
-    { id: "4", name: "Design", parentDepartment: "None", head: "Mike Ross", employeeCount: 18, status: "Active" },
-    { id: "5", name: "IT Support", parentDepartment: "Operations", head: "John Doe", employeeCount: 8, status: "Active" },
-  ],
-  categories: [
-    { id: "1", name: "Laptops", description: "All company workstation laptops", color: "blue" },
-    { id: "2", name: "Printers", description: "Office printers and scanner hubs", color: "green" },
-    { id: "3", name: "Furniture", description: "Desks, chairs and ergonomic items", color: "amber" },
-    { id: "4", name: "Monitors", description: "Workstation displays", color: "purple" },
-    { id: "5", name: "AV Equipment", description: "Conference room audio and visual setup", color: "pink" },
-  ],
-  allocations: [
-    { id: "1", assetId: "1", assetName: 'MacBook Pro 16"', employeeId: "1", employeeName: "Sarah Chen", department: "Engineering", allocationDate: "2026-07-01", expectedReturnDate: "2027-07-01", status: "Active" },
-    { id: "2", assetId: "2", assetName: "Dell XPS 15", employeeId: "2", employeeName: "Mike Ross", department: "Design", allocationDate: "2026-07-02", expectedReturnDate: "2027-07-02", status: "Active" },
-    { id: "3", assetId: "4", assetName: "Standing Desk", employeeId: "3", employeeName: "Lisa Park", department: "Marketing", allocationDate: "2026-07-03", expectedReturnDate: "2027-07-03", status: "Active" },
-  ],
-  bookings: [
-    { id: "1", resource: "Conference Room A AV", date: "2026-07-15", startTime: "14:00", endTime: "15:00", department: "Product", purpose: "Sprint Planning", status: "Approved" },
-    { id: "2", resource: "Projector HD", date: "2026-07-16", startTime: "10:00", endTime: "12:00", department: "Marketing", purpose: "Campaign Launch", status: "Pending" },
-  ],
-  maintenance: [
-    { id: "1", assetId: "3", assetName: "HP LaserJet Pro", description: "Paper jam issue & toner replacement", priority: "High", status: "Pending", technician: "", createdAt: "2026-07-12" },
-  ],
-  audits: [
-    { id: "1", name: "Q4 Asset Verification", scope: "Full Company", department: "All Departments", auditor: "Robert Taylor", startDate: "2026-12-01", endDate: "2026-12-15", status: "Scheduled" },
-  ],
-  notifications: [
-    { id: "1", title: "New Asset Registered", description: "Dell 27\" Monitor was added by John Doe", time: "5 min ago", read: false, category: "info" },
-    { id: "2", title: "Maintenance Request High Priority", description: "HP LaserJet Pro requires immediate repair", time: "30 min ago", read: false, category: "alert" },
-    { id: "3", title: "Audit Cycle Approaching", description: "Q4 Asset Verification starts soon", time: "2 hours ago", read: true, category: "info" },
-  ],
-  activities: [
-    { initials: "JD", action: "allocated", entity: "MacBook Pro 16\"", target: "Sarah Chen", department: "Engineering", time: "5 min ago", type: "allocation" },
-    { initials: "SC", action: "completed maintenance on", entity: "HP LaserJet Pro", department: "IT Support", time: "23 min ago", type: "maintenance" },
-    { initials: "MR", action: "booked", entity: "Conference Room A", department: "Product", time: "1h ago", type: "booking" },
-  ],
+  assets: [],
+  employees: [],
+  departments: [],
+  categories: [],
+  allocations: [],
+  bookings: [],
+  maintenance: [],
+  audits: [],
+  notifications: [],
+  activities: [],
 
   // Actions implementation
   addAsset: (asset) => set((state) => {

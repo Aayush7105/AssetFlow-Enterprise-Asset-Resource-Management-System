@@ -29,9 +29,12 @@ function getQueryClient() {
 import { useEffect } from "react"
 import { useAuthStore, DEFAULT_ADMIN_USER } from "@/stores/auth.store"
 import { useSettingsStore } from "@/stores/settings.store"
+import { AnimatePresence } from "framer-motion"
+import { AuthLoader } from "@/components/auth/AuthLoader"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => getQueryClient())
+  const isAuthenticating = useAuthStore((state) => state.isAuthenticating)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -41,11 +44,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
           useAuthStore.getState().setUser(JSON.parse(stored))
         } catch (e) {
           console.error("Failed to parse stored user", e)
-          useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+          useAuthStore.getState().setUser(null)
         }
       } else {
-        useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+        useAuthStore.getState().setUser(null)
       }
+      useAuthStore.getState().setLoading(false)
       useSettingsStore.getState().loadSettings()
     }
   }, [])
@@ -59,6 +63,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         {children}
+        <AnimatePresence mode="wait">
+          {isAuthenticating && <AuthLoader />}
+        </AnimatePresence>
       </QueryClientProvider>
     </ThemeProvider>
   )

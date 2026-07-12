@@ -17,8 +17,10 @@ interface AuthState {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
+  isAuthenticating: boolean
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
+  setAuthenticating: (isAuthenticating: boolean) => void
   updateOrganization: (name: string, industry: string) => void
   logout: () => void
 }
@@ -37,7 +39,8 @@ export const DEFAULT_ADMIN_USER: User = {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
+  isAuthenticating: false,
   setUser: (user) => {
     if (typeof window !== "undefined") {
       if (user) {
@@ -49,6 +52,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user, isAuthenticated: !!user })
   },
   setLoading: (isLoading) => set({ isLoading }),
+  setAuthenticating: (isAuthenticating) => set({ isAuthenticating }),
   updateOrganization: (name, industry) => {
     set((state) => {
       if (!state.user) return state

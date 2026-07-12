@@ -6,14 +6,15 @@ const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
-    const adminCheck = await db.query(
-      `SELECT * FROM user_roles WHERE role = 'ADMIN'`
+    const emailCheck = await db.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email]
     );
 
-    if (adminCheck.rows.length > 0) {
-      return res.status(403).json({
+    if (emailCheck.rows.length > 0) {
+      return res.status(400).json({
         success: false,
-        message: "Admin already exists.",
+        message: "A user with this email already exists.",
       });
     }
 
