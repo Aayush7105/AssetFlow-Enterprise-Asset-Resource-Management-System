@@ -4,7 +4,7 @@ const { hashPassword } = require("./utils/hash");
 
 const seedUser = async () => {
     try {
-        await db.connect();
+        await db.query("SELECT 1");
         const hashedPassword = await hashPassword("admin123");
         
         const userResult = await db.query(
@@ -35,3 +35,4 @@ const seedUser = async () => {
 };
 
 seedUser();
+
