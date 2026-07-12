@@ -1,8 +1,7 @@
-"use client"
+﻿"use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle2, Building2, Globe, Mail, Phone, Clock } from "lucide-react"
-
 
 const MOCK_ORG = {
   name: "Acme Corporation",

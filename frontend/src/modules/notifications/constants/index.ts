@@ -1,4 +1,4 @@
-export const MOCK_NOTIFICATIONS = [
+﻿export const MOCK_NOTIFICATIONS = [
   {
     id: "1",
     title: "Asset Return Overdue",

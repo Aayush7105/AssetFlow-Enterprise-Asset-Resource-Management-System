@@ -1,4 +1,4 @@
-export const MOCK_STATS = {
+﻿export const MOCK_STATS = {
   totalAssets: 1247,
   allocatedAssets: 856,
   availableAssets: 312,

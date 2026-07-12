@@ -1,19 +1,15 @@
-export const authService = {
+﻿export const authService = {
   login: async (_credentials: { email: string; password: string }) => {
-
     return null
   },
 
   logout: async () => {
-
   },
 
   forgotPassword: async (_email: string) => {
-
   },
 
   resetPassword: async (_data: { token: string; password: string }) => {
-
   },
 
   registerOrganization: async (_data: {
@@ -27,7 +23,6 @@ export const authService = {
     workEmail: string
     password: string
   }) => {
-
     return {
       organizationId: "org-placeholder",
       userId: "user-placeholder",
@@ -37,10 +32,8 @@ export const authService = {
   },
 
   verifyEmail: async (_token: string, _email: string) => {
-
   },
 
   resendVerificationEmail: async (_email: string) => {
-
   },
 }

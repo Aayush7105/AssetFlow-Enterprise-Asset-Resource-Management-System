@@ -1,7 +1,6 @@
-"use client"
+﻿"use client"
 
 export function useOnboarding() {
-
   return {
     submitCompany: async (_data: Record<string, unknown>) => {
       console.log("Submit company placeholder")

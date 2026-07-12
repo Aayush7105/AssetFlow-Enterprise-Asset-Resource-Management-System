@@ -1,4 +1,4 @@
-export interface DashboardStats {
+﻿export interface DashboardStats {
   totalAssets: number
   allocatedAssets: number
   availableAssets: number

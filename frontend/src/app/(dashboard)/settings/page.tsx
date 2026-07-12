@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/page-header"
+﻿import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch"
 
 export default function SettingsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="Settings"
         description="Manage your account and organization settings"
@@ -17,7 +17,7 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Building2 className="size-4" />
+              <Building2 className="size-4 text-muted-foreground" />
               Organization
             </CardTitle>
             <CardDescription>Manage your organization details</CardDescription>
@@ -39,25 +39,27 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Bell className="size-4" />
+              <Bell className="size-4 text-muted-foreground" />
               Notification Preferences
             </CardTitle>
             <CardDescription>Configure how you receive notifications</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {[
-              { label: "Email Notifications", description: "Receive notifications via email" },
-              { label: "Push Notifications", description: "Receive push notifications in browser" },
-              { label: "In-App Notifications", description: "Show notifications within the app" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.description}</p>
+          <CardContent>
+            <div className="divide-y divide-border/50">
+              {[
+                { label: "Email Notifications", description: "Receive notifications via email" },
+                { label: "Push Notifications", description: "Receive push notifications in browser" },
+                { label: "In-App Notifications", description: "Show notifications within the app" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between py-3">
+                  <div>
+                    <p className="text-sm font-medium">{item.label}</p>
+                    <p className="text-xs text-muted-foreground">{item.description}</p>
+                  </div>
+                  <Switch defaultChecked />
                 </div>
-                <Switch defaultChecked />
-              </div>
-            ))}
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

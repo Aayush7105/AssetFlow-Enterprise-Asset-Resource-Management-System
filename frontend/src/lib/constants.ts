@@ -1,4 +1,4 @@
-export const APP_NAME = "AssetFlow"
+﻿export const APP_NAME = "AssetFlow"
 
 export const ROUTES = {
   HOME: "/",
@@ -32,6 +32,8 @@ export const ROLES = [
 ] as const
 
 export type Role = (typeof ROLES)[number]
+
+export type UserRole = "admin" | "asset_manager" | "department_head" | "employee" | "auditor"
 
 export const ASSET_CONDITIONS = ["NEW", "GOOD", "FAIR", "POOR", "DISPOSED"] as const
 export type AssetCondition = (typeof ASSET_CONDITIONS)[number]

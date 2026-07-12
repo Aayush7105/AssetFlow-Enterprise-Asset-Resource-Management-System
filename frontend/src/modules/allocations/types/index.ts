@@ -1,4 +1,4 @@
-export interface Allocation {
+﻿export interface Allocation {
   id: string
   assetId: string
   assetName: string

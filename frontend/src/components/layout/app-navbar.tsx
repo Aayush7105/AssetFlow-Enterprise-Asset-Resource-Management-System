@@ -1,7 +1,6 @@
-"use client"
+﻿"use client"
 
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -14,67 +13,55 @@ import {
 import { Bell, Search, Moon, Sun, User, LogOut, Settings, HelpCircle } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useNotificationStore } from "@/stores/notification.store"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/lib/constants"
+import { useAuthStore } from "@/stores/auth.store"
+import { useAuth } from "@/modules/auth/hooks"
 
-interface AppNavbarProps {
-  title?: string
-}
-
-export function AppNavbar({ title }: AppNavbarProps) {
+export function AppNavbar() {
   const { theme, setTheme } = useTheme()
   const unreadCount = useNotificationStore((s) => s.unreadCount)
-  const [searchOpen, setSearchOpen] = useState(false)
   const router = useRouter()
+  const user = useAuthStore((s) => s.user)
+  const { logout } = useAuth()
+
+  const displayName = user?.name || "John Doe"
+  const email = user?.email || "john@company.com"
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push(ROUTES.LOGIN)
+  }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center border-b border-border/50 bg-background/80 backdrop-blur-xl px-6">
       <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 h-4" />
-      {title && (
-        <h2 className="text-sm font-medium hidden sm:block">{title}</h2>
-      )}
 
       <div className="flex-1" />
 
-      {searchOpen ? (
-        <div className="flex items-center gap-2">
-          <Input
-            placeholder="Search assets, employees..."
-            className="h-9 w-48 lg:w-64"
-            autoFocus
-            onBlur={() => setSearchOpen(false)}
-          />
-        </div>
-      ) : (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-9"
-          onClick={() => setSearchOpen(true)}
-        >
-          <Search className="size-4" />
-          <span className="sr-only">Search</span>
-        </Button>
-      )}
+      <div className="hidden md:flex items-center bg-secondary/50 border border-border/50 rounded-full h-9 px-4 w-64">
+        <Search className="size-4 text-muted-foreground mr-2" />
+        <input
+          type="text"
+          placeholder="Search..."
+          className="bg-transparent border-none outline-none text-sm placeholder:text-muted-foreground w-full"
+        />
+      </div>
 
       <Button
         variant="ghost"
         size="icon"
-        className="relative size-9"
+        className="relative size-9 text-muted-foreground"
         onClick={() => router.push(ROUTES.NOTIFICATIONS)}
       >
         <Bell className="size-4" />
         {unreadCount > 0 && (
-          <Badge
-            variant="destructive"
-            className="absolute -right-1 -top-1 size-4 flex items-center justify-center rounded-full p-0 text-[10px]"
-          >
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </Badge>
+          <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-foreground" />
         )}
         <span className="sr-only">Notifications</span>
       </Button>
@@ -93,16 +80,16 @@ export function AppNavbar({ title }: AppNavbarProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative size-9 rounded-full">
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">
-              JD
+            <div className="flex size-8 items-center justify-center rounded-full bg-secondary text-secondary-foreground text-xs font-medium">
+              {initials}
             </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">John Doe</p>
-              <p className="text-xs leading-none text-muted-foreground">john@company.com</p>
+              <p className="text-sm font-medium leading-none">{displayName}</p>
+              <p className="text-xs leading-none text-muted-foreground">{email}</p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -119,7 +106,7 @@ export function AppNavbar({ title }: AppNavbarProps) {
             Help
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="text-red-600 cursor-pointer" onClick={handleLogout}>
             <LogOut className="mr-2 size-4" />
             Log out
           </DropdownMenuItem>

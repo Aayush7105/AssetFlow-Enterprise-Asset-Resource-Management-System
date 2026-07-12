@@ -1,4 +1,4 @@
-export const MOCK_ASSETS = [
+﻿export const MOCK_ASSETS = [
   {
     id: "1",
     name: "MacBook Pro 16\"",

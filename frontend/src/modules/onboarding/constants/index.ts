@@ -1,4 +1,4 @@
-export const ONBOARDING_STEPS = [
+﻿export const ONBOARDING_STEPS = [
   { id: 1, title: "Company", description: "Your organization details", route: "/company" },
   { id: 2, title: "Categories", description: "Set up asset categories", route: "/asset-categories" },
   { id: 3, title: "Departments", description: "Create departments", route: "/departments" },

@@ -1,4 +1,4 @@
-export interface Booking {
+﻿export interface Booking {
   id: string
   assetId: string
   assetName: string

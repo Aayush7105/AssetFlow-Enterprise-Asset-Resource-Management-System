@@ -1,4 +1,4 @@
-export interface Report {
+﻿export interface Report {
   id: string
   name: string
   type: "asset_summary" | "allocation_report" | "maintenance_report" | "audit_report" | "department_report" | "custom"

@@ -1,4 +1,4 @@
-export interface MaintenanceRequest {
+﻿export interface MaintenanceRequest {
   id: string
   assetId: string
   assetName: string

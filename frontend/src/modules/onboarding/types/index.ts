@@ -1,4 +1,4 @@
-export interface CompanyData {
+﻿export interface CompanyData {
   name: string
   industry: string
   size: string

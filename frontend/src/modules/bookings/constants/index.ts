@@ -1,4 +1,4 @@
-export const MOCK_BOOKINGS = [
+﻿export const MOCK_BOOKINGS = [
   {
     id: "1",
     assetName: "Conference Room Camera",

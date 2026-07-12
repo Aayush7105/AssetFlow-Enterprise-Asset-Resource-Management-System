@@ -1,13 +1,16 @@
-"use client"
+﻿"use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useCallback, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { ROUTES } from "@/lib/constants"
 import { useAuth } from "@/modules/auth/hooks"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
-import { Mail, CheckCircle2, Loader2, ArrowRight } from "lucide-react"
+import {
+  Mail,
+  CheckCircle2,
+  Loader2,
+  ArrowRight,
+} from "lucide-react"
 
 function VerifyEmailContent() {
   const router = useRouter()
@@ -21,15 +24,18 @@ function VerifyEmailContent() {
 
   const hasToken = !!searchParams.get("token")
 
-  const doVerify = useCallback(async (token: string) => {
-    setIsVerifying(true)
-    try {
-      await verifyEmail(token, email)
-      setIsVerified(true)
-    } finally {
-      setIsVerifying(false)
-    }
-  }, [verifyEmail, email])
+  const doVerify = useCallback(
+    async (token: string) => {
+      setIsVerifying(true)
+      try {
+        await verifyEmail(token, email)
+        setIsVerified(true)
+      } finally {
+        setIsVerifying(false)
+      }
+    },
+    [verifyEmail, email],
+  )
 
   useEffect(() => {
     const token = searchParams.get("token")
@@ -54,76 +60,68 @@ function VerifyEmailContent() {
   }
 
   return (
-    <Card className="border-0 shadow-none bg-transparent p-0 flex flex-col gap-0 w-full">
-      <CardHeader className="text-left pb-6 p-0 flex flex-col gap-2">
-        <div className="mb-2 flex size-14 items-center justify-center rounded-full bg-muted">
-          {isVerified ? (
-            <CheckCircle2 className="size-7 text-foreground" />
-          ) : (
-            <Mail className="size-7 text-foreground" />
-          )}
+    <div className="flex flex-col gap-8">
+      <div className="space-y-2">
+        <div className="mb-6 flex items-center gap-2.5">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <svg
+              className="size-[18px]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <span className="text-lg font-semibold tracking-tight">AssetFlow</span>
         </div>
-        <CardTitle className="text-3xl font-bold tracking-tight">
+
+        <h1 className="text-2xl font-bold tracking-tight">
           {isVerified ? "Email verified" : "Check your email"}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        </h1>
+        <p className="text-sm text-muted-foreground">
           {isVerified
-            ? "Your email has been verified successfully. You can now set up your workspace."
-            : `We've sent a verification link to ${email ? email : "your email address"}. Please check your inbox.`}
+            ? "Your email has been verified successfully."
+            : `We've sent a verification link to ${email ? email : "your email address"}.`}
         </p>
-      </CardHeader>
+      </div>
 
-      <CardContent className="space-y-4 p-0 pb-6">
-        {isVerifying && (
-          <div className="flex flex-col items-center gap-3 py-4">
-            <Loader2 className="size-6 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Verifying your email...</p>
-          </div>
-        )}
+      {isVerifying && (
+        <div className="flex flex-col items-center gap-3 py-8">
+          <Loader2 className="size-6 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Verifying your email...</p>
+        </div>
+      )}
 
-        {!isVerifying && !isVerified && !hasToken && (
-          <div className="rounded-lg border bg-muted/50 p-4">
+      {!isVerifying && !isVerified && !hasToken && (
+        <div className="space-y-4">
+          <div className="rounded-xl border bg-muted/30 p-5">
             <div className="flex items-start gap-3">
-              <Mail className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium">Didn't receive the email?</p>
-                <p className="text-xs text-muted-foreground">
-                  Check your spam folder, or try resending the verification email.
+              <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 shrink-0 mt-0.5">
+                <Mail className="size-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">
+                  Didn&apos;t receive the email?
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Check your spam folder, or try resending the verification
+                  email.
                 </p>
               </div>
             </div>
           </div>
-        )}
 
-        {!isVerifying && isVerified && (
-          <div className="rounded-lg border border-border bg-muted/30 p-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="size-5 text-foreground mt-0.5 shrink-0" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium">You're all set!</p>
-                <p className="text-xs text-muted-foreground">
-                  Your organization has been created. Let's configure your workspace.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </CardContent>
-
-      <CardFooter className="flex flex-col gap-4 p-0">
-        {isVerified && (
-          <Button onClick={handleContinue} className="w-full">
-            Continue to Setup
-            <ArrowRight className="size-4" />
-          </Button>
-        )}
-
-        {!isVerifying && !isVerified && !hasToken && (
           <Button
             variant="outline"
             onClick={handleResend}
             disabled={isResending}
-            className="w-full"
+            className="w-full h-11 text-sm"
           >
             {isResending ? (
               <>
@@ -134,22 +132,49 @@ function VerifyEmailContent() {
               "Resend verification email"
             )}
           </Button>
-        )}
 
-        {resendSuccess && (
-          <p className="text-xs text-left text-emerald-600 dark:text-emerald-400">
-            Verification email has been resent successfully.
-          </p>
-        )}
+          {resendSuccess && (
+            <p className="text-xs text-center text-emerald-600 dark:text-emerald-400">
+              Verification email has been resent successfully.
+            </p>
+          )}
+        </div>
+      )}
 
-        <a
-          href={ROUTES.LOGIN}
-          className="text-sm text-muted-foreground hover:text-foreground font-medium"
-        >
-          Back to sign in
-        </a>
-      </CardFooter>
-    </Card>
+      {!isVerifying && isVerified && (
+        <div className="space-y-5">
+          <div className="rounded-xl border border-primary/15 bg-primary/[0.03] p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex size-9 items-center justify-center rounded-full bg-emerald-500/10 shrink-0 mt-0.5">
+                <CheckCircle2 className="size-4 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">You&apos;re all set!</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Your organization has been created. Let&apos;s configure
+                  your workspace.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleContinue}
+            className="w-full h-11 text-sm font-medium"
+          >
+            Continue to Setup
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
+      )}
+
+      <a
+        href={ROUTES.LOGIN}
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/50 hover:text-foreground transition-colors duration-200"
+      >
+        Back to sign in
+      </a>
+    </div>
   )
 }
 
@@ -157,11 +182,9 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <Card>
-          <CardContent className="flex items-center justify-center py-12">
-            <Loader2 className="size-6 animate-spin text-primary" />
-          </CardContent>
-        </Card>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
       }
     >
       <VerifyEmailContent />

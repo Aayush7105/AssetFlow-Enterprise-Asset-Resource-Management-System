@@ -1,4 +1,4 @@
-export const MOCK_ORG_SETTINGS = {
+﻿export const MOCK_ORG_SETTINGS = {
   name: "Acme Corporation",
   industry: "Technology",
   size: "201-500",

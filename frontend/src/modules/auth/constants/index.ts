@@ -1,4 +1,4 @@
-export const AUTH_ROUTES = {
+﻿export const AUTH_ROUTES = {
   LOGIN: "/login",
   REGISTER_COMPANY: "/register-company",
   FORGOT_PASSWORD: "/forgot-password",

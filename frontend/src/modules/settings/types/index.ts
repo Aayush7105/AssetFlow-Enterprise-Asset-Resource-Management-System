@@ -1,4 +1,4 @@
-export interface OrganizationSettings {
+﻿export interface OrganizationSettings {
   name: string
   logo?: string
   industry: string

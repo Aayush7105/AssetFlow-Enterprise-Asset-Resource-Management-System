@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/page-header"
+﻿import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { BarChart3 } from "lucide-react"
 

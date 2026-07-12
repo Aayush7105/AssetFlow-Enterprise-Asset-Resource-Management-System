@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { cn } from "@/lib/utils"
 import { Badge, type BadgeProps } from "@/components/ui/badge"
@@ -12,12 +12,12 @@ interface StatusChipProps extends Omit<BadgeProps, "variant"> {
 }
 
 const variantStyles: Record<StatusVariant, string> = {
-  success: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  warning: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-  danger: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400 border-red-200 dark:border-red-800",
-  info: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  neutral: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700",
-  default: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700",
+  success: "bg-secondary text-foreground border-border/50",
+  warning: "bg-secondary text-foreground border-border/50",
+  danger: "bg-secondary text-foreground border-border/50",
+  info: "bg-secondary text-foreground border-border/50",
+  neutral: "bg-muted text-muted-foreground border-border/50",
+  default: "bg-muted text-muted-foreground border-border/50",
 }
 
 const dotStyles: Record<StatusVariant, string> = {
@@ -25,8 +25,8 @@ const dotStyles: Record<StatusVariant, string> = {
   warning: "bg-amber-500",
   danger: "bg-red-500",
   info: "bg-blue-500",
-  neutral: "bg-slate-500",
-  default: "bg-slate-500",
+  neutral: "bg-muted-foreground",
+  default: "bg-muted-foreground",
 }
 
 export function StatusChip({ status, label, dot = true, className, ...props }: StatusChipProps) {

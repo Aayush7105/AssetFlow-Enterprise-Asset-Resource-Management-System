@@ -1,4 +1,4 @@
-import { type UserRole } from "@/lib/constants";
+﻿import { type UserRole } from "@/lib/constants";
 
 type PermissionMap = Record<UserRole, string[]>;
 
@@ -24,6 +24,7 @@ export const PERMISSIONS: PermissionMap = {
     "notifications",
   ],
   employee: ["dashboard", "assets", "bookings", "notifications"],
+  auditor: ["dashboard", "assets", "audits", "reports", "notifications"],
 };
 
 export function hasPermission(role: UserRole, module: string): boolean {

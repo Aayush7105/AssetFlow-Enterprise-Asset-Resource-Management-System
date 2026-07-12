@@ -1,4 +1,4 @@
-export interface Audit {
+﻿export interface Audit {
   id: string
   title: string
   type: "full" | "partial" | "spot"

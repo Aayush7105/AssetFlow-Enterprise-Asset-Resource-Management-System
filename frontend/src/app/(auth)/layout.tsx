@@ -1,90 +1,122 @@
-"use client"
+﻿"use client"
 
-import React from "react"
-import { Boxes, Package, Calendar, Wrench, BarChart3 } from "lucide-react"
+import { useState, useMemo } from "react"
+import { usePathname } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+import { AuthIllustration } from "@/components/auth/auth-illustration"
+
+const ROUTE_ORDER = ["/login", "/forgot-password", "/register-company", "/verify-email"] as const
+
+function getDirection(prev: string, current: string): number {
+  const prevIdx = ROUTE_ORDER.indexOf(prev as typeof ROUTE_ORDER[number])
+  const currIdx = ROUTE_ORDER.indexOf(current as typeof ROUTE_ORDER[number])
+  if (prevIdx < currIdx) return 1
+  if (prevIdx > currIdx) return -1
+  return 1
+}
+
+const ease = [0.25, 0.1, 0.25, 1] as const
+
+function slideVariants(direction: number, slide: number, blur: number, enter: number) {
+  return {
+    initial: {
+      opacity: 0,
+      x: direction * slide,
+      scale: 1 - (slide > 0 ? 0.02 : 0),
+      filter: `blur(${blur}px)`,
+    },
+    animate: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: enter, ease: ease as unknown as number[] },
+    },
+    exit: {
+      opacity: 0,
+      x: -direction * slide,
+      scale: 1 - (slide > 0 ? 0.02 : 0),
+      filter: `blur(${blur}px)`,
+      transition: { duration: Math.max(0.2, enter * 0.6), ease: ease as unknown as number[] },
+    },
+  }
+}
+
+function fadeVariants(enter: number, exit: number) {
+  return {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: enter, ease: ease as unknown as number[] } },
+    exit: { opacity: 0, transition: { duration: exit, ease: ease as unknown as number[] } },
+  }
+}
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+
+  const [prevPathname, setPrevPathname] = useState(pathname)
+  const [direction, setDirection] = useState(1)
+
+  const isPremiumTransition =
+    (prevPathname === "/login" && pathname === "/register-company") ||
+    (prevPathname === "/register-company" && pathname === "/login")
+
+  if (pathname !== prevPathname) {
+    setDirection(getDirection(prevPathname, pathname))
+    setPrevPathname(pathname)
+  }
+
+  const illustrationAnim = useMemo(
+    () =>
+      isPremiumTransition
+        ? slideVariants(direction, 120, 6, 0.5)
+        : fadeVariants(0.4, 0.25),
+    [isPremiumTransition, direction],
+  )
+
+  const formAnim = useMemo(
+    () =>
+      isPremiumTransition
+        ? slideVariants(direction, 60, 4, 0.55)
+        : fadeVariants(0.45, 0.3),
+    [isPremiumTransition, direction],
+  )
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-background">
-      {/* Left panel - Dark Theme (hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-neutral-950 text-white p-12 flex-col justify-between overflow-hidden">
-        {/* Subtle grid background pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-neutral-950 to-neutral-900 pointer-events-none" />
-
-        <div className="relative z-10 flex items-center gap-2.5">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-white text-black">
-            <Boxes className="size-5" />
-          </div>
-          <span className="text-xl font-bold tracking-tight">AssetFlow</span>
-        </div>
-
-        <div className="relative z-10 my-auto max-w-xl space-y-6">
-          <h1 className="text-4xl xl:text-5xl font-bold tracking-tight leading-tight">
-            Manage every asset, <br />
-            from one unified platform.
-          </h1>
-          <p className="text-neutral-400 text-base xl:text-lg leading-relaxed">
-            Streamline your asset lifecycle, resource allocation, and maintenance workflows with enterprise-grade tools built for modern teams.
-          </p>
-        </div>
-
-        <div className="relative z-10 pt-8 border-t border-white/10">
-          <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-md bg-white/5 border border-white/10">
-                <Package className="size-4 text-neutral-300" />
-              </div>
-              <span className="text-sm font-medium text-neutral-300">Asset Tracking</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-md bg-white/5 border border-white/10">
-                <Calendar className="size-4 text-neutral-300" />
-              </div>
-              <span className="text-sm font-medium text-neutral-300">Resource Booking</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-md bg-white/5 border border-white/10">
-                <Wrench className="size-4 text-neutral-300" />
-              </div>
-              <span className="text-sm font-medium text-neutral-300">Maintenance Workflow</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-md bg-white/5 border border-white/10">
-                <BarChart3 className="size-4 text-neutral-300" />
-              </div>
-              <span className="text-sm font-medium text-neutral-300">Enterprise Analytics</span>
-            </div>
-          </div>
-        </div>
+      <div className="hidden lg:block lg:w-[60%] xl:w-[62%] relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`illustration-${pathname}`}
+            variants={illustrationAnim}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="absolute inset-0"
+          >
+            <AuthIllustration pathname={pathname} />
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Right panel - Light Theme */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 lg:p-16 xl:p-24 bg-background">
-        <div className="w-full max-w-md space-y-8">
-          {/* Logo Header (Black and White Theme) */}
-          <div className="flex items-center gap-2.5 lg:hidden">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Boxes className="size-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">AssetFlow</span>
-          </div>
+      <div className="flex-1 lg:w-[40%] xl:w-[38%] flex items-center justify-center p-6 sm:p-8 lg:p-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30 pointer-events-none" />
 
-          <div className="hidden lg:flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Boxes className="size-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">AssetFlow</span>
-          </div>
-
-          <div className="w-full">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`form-${pathname}`}
+            variants={formAnim}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="relative z-10 w-full max-w-[420px] mx-auto my-auto"
+          >
             {children}
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   )

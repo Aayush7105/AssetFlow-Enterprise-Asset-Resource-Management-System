@@ -1,4 +1,4 @@
-export const MOCK_ALLOCATIONS = [
+﻿export const MOCK_ALLOCATIONS = [
   {
     id: "1",
     assetName: "MacBook Pro 16\"",

@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input"
+﻿import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -15,7 +15,7 @@ export function SearchBar({ placeholder = "Search...", className, value, onChang
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
       <Input
         placeholder={placeholder}
-        className="pl-9"
+        className="h-10 rounded-lg pl-9"
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
       />

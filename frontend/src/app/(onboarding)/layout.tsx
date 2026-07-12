@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -32,11 +32,10 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-2xl">
-        {}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 mb-2 text-emerald-600 dark:text-emerald-400">
+          <div className="inline-flex items-center gap-2 mb-2 text-success">
             <CheckCircle2 className="size-5" />
             <span className="text-sm font-semibold">Company Created</span>
           </div>
@@ -44,7 +43,6 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
           <p className="text-sm text-muted-foreground mt-1">Complete these steps to get started</p>
         </div>
 
-        {}
         <div className="flex items-center justify-center gap-1 mb-6">
           {ONBOARDING_STEPS.map((step, index) => (
             <div key={step.id} className="flex items-center">
@@ -52,8 +50,8 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
                 className={cn(
                   "flex size-8 items-center justify-center rounded-full text-xs font-medium transition-colors",
                   completedSteps.includes(index) && "bg-primary text-primary-foreground",
-                  currentStep === index && !completedSteps.includes(index) && "bg-primary/10 text-primary border-2 border-primary",
-                  currentStep !== index && !completedSteps.includes(index) && "bg-muted text-muted-foreground"
+                  currentStep === index && !completedSteps.includes(index) && "bg-accent text-foreground ring-1 ring-foreground/20",
+                  currentStep !== index && !completedSteps.includes(index) && "bg-secondary text-secondary-foreground"
                 )}
               >
                 {completedSteps.includes(index) ? (
@@ -66,7 +64,7 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
                 <div
                   className={cn(
                     "w-8 h-0.5 mx-1",
-                    completedSteps.includes(index) ? "bg-primary" : "bg-muted"
+                    completedSteps.includes(index) ? "bg-primary" : "bg-border"
                   )}
                 />
               )}
