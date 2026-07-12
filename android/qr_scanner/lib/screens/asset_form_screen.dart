@@ -68,6 +68,8 @@ class _AssetFormScreenState extends State<AssetFormScreen> {
       'asset_condition': _condition,
       'status': _status,
       'is_bookable': _isBookable,
+      'acquisition_date': widget.asset?.acquisitionDate,
+      'acquisition_cost': widget.asset?.acquisitionCost,
     };
 
     try {
