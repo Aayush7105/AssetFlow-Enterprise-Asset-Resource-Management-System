@@ -17,11 +17,13 @@ const createAuditItemTable = require("./models/AuditItem");
 const createNotificationTable = require("./models/Notification");
 const createActivityLogTable = require("./models/ActivityLog");
 const userRoutes = require("./routes/UserRoutes");
+const departmentRoutes = require("./routes/DepartmentRoutes");
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
+app.use("/api/departments", departmentRoutes);
 
 db.connect().then(async() => {
     console.log("Connected to the database");

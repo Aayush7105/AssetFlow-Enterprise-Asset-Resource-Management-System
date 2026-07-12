@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendMail = async (to, subject, html) => {
+const sendMail = async ({to, subject, html}) => {
     try {
         const mailOptions = {
             from: `"AssetFlow ERP" <${process.env.EMAIL_USER}>`,

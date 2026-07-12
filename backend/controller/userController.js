@@ -79,7 +79,7 @@ const createUser = async (req, res) => {
             [
                 user.rows[0].id,
                 role,
-                req.user.id
+                req.department_id
             ]
         );
 
