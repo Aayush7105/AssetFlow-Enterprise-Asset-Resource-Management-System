@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { ThemeProvider } from "next-themes"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -26,8 +26,29 @@ function getQueryClient() {
   return browserQueryClient
 }
 
+import { useEffect } from "react"
+import { useAuthStore, DEFAULT_ADMIN_USER } from "@/stores/auth.store"
+import { useSettingsStore } from "@/stores/settings.store"
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => getQueryClient())
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("assetflow_user")
+      if (stored) {
+        try {
+          useAuthStore.getState().setUser(JSON.parse(stored))
+        } catch (e) {
+          console.error("Failed to parse stored user", e)
+          useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+        }
+      } else {
+        useAuthStore.getState().setUser(DEFAULT_ADMIN_USER)
+      }
+      useSettingsStore.getState().loadSettings()
+    }
+  }, [])
 
   return (
     <ThemeProvider

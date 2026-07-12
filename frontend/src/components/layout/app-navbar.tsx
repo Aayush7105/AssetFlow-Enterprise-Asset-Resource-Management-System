@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, Search, User, LogOut, Settings, HelpCircle, Command } from "lucide-react"
+import { Bell, Search, User, LogOut, Command } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useNotificationStore } from "@/stores/notification.store"
 import { useRouter } from "next/navigation"
@@ -125,14 +125,7 @@ export function AppNavbar() {
               <User className="mr-2 size-4" />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push(ROUTES.SETTINGS)} className="text-[13px]">
-              <Settings className="mr-2 size-4" />
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-[13px]">
-              <HelpCircle className="mr-2 size-4" />
-              Help & Support
-            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer text-[13px]" onClick={handleLogout}>
               <LogOut className="mr-2 size-4" />

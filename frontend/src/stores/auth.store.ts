@@ -1,7 +1,7 @@
-﻿import { create } from "zustand"
+import { create } from "zustand"
 import { type UserRole } from "@/lib/constants"
 
-interface User {
+export interface User {
   id: string
   email: string
   name: string
@@ -10,6 +10,7 @@ interface User {
   organizationId: string
   organizationName: string
   isOnboarded: boolean
+  industry?: string
 }
 
 interface AuthState {
@@ -18,14 +19,54 @@ interface AuthState {
   isLoading: boolean
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
+  updateOrganization: (name: string, industry: string) => void
   logout: () => void
+}
+
+export const DEFAULT_ADMIN_USER: User = {
+  id: "demo-admin-id",
+  email: "admin@assetflow.com",
+  name: "Alex Admin",
+  role: "admin",
+  organizationId: "org-1",
+  organizationName: "Acme Enterprise",
+  isOnboarded: true,
+  industry: "Technology",
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
   isLoading: false,
-  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setUser: (user) => {
+    if (typeof window !== "undefined") {
+      if (user) {
+        localStorage.setItem("assetflow_user", JSON.stringify(user))
+      } else {
+        localStorage.removeItem("assetflow_user")
+      }
+    }
+    set({ user, isAuthenticated: !!user })
+  },
   setLoading: (isLoading) => set({ isLoading }),
-  logout: () => set({ user: null, isAuthenticated: false }),
+  updateOrganization: (name, industry) => {
+    set((state) => {
+      if (!state.user) return state
+      const updatedUser = {
+        ...state.user,
+        organizationName: name,
+        industry,
+      }
+      if (typeof window !== "undefined") {
+        localStorage.setItem("assetflow_user", JSON.stringify(updatedUser))
+      }
+      return { user: updatedUser }
+    })
+  },
+  logout: () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("assetflow_user")
+    }
+    set({ user: null, isAuthenticated: false })
+  },
 }))

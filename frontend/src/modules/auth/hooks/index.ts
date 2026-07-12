@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useAuthStore } from "@/stores/auth.store"
 import { toast } from "sonner"
