@@ -24,6 +24,8 @@ const assetRoutes = require("./routes/assetRoutes");
 const allocationRoutes = require("./routes/allocationRoutes");
 const resourceBookingRoutes = require("./routes/resourceBookingRoutes");    
 const transferRequestRoutes = require("./routes/transferRequestRoutes");
+const maintenanceRoutes = require("./routes/maintenanceRoutes");
+
 
 const app = express();
 app.use(cors());

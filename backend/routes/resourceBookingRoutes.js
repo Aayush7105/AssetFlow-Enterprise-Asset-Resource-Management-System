@@ -9,7 +9,7 @@ const {
     updateBooking,
     cancelBooking,
     completeBooking
-} = require("../controllers/resourceBookingController");
+} = require("../controller/resourceBookingController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");

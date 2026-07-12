@@ -11,7 +11,7 @@ const {
     assignTechnician,
     startMaintenance,
     resolveMaintenance
-} = require("../controllers/maintenanceController");
+} = require("../controller/maintenanceController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
