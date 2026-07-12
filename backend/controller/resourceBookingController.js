@@ -416,3 +416,82 @@ const cancelBooking = async (req, res) => {
 
     }
 };
+const completeBooking = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const bookingResult = await db.query(
+            `
+            SELECT *
+            FROM resource_bookings
+            WHERE id = $1
+            `,
+            [id]
+        );
+
+        if (bookingResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found."
+            });
+        }
+
+        const booking = bookingResult.rows[0];
+
+        if (booking.status === "COMPLETED") {
+            return res.status(400).json({
+                success: false,
+                message: "Booking is already completed."
+            });
+        }
+
+        if (booking.status === "CANCELLED") {
+            return res.status(400).json({
+                success: false,
+                message: "Cancelled booking cannot be completed."
+            });
+        }
+
+        const result = await db.query(
+            `
+            UPDATE resource_bookings
+            SET
+
+                status = 'COMPLETED',
+
+                updated_at = CURRENT_TIMESTAMP
+
+            WHERE id = $1
+
+            RETURNING *
+            `,
+            [id]
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Booking completed successfully.",
+            data: result.rows[0]
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+
+    }
+};
+
+module.exports = {
+    createBooking,
+    getAllBookings,
+    getBookingById,
+    updateBooking,
+    cancelBooking,
+    completeBooking
+};
