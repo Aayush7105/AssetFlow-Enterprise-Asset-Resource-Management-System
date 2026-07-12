@@ -4,7 +4,7 @@ class AppConstants {
   // Change this to your backend's URL.
   // For Android emulator → host machine, use 10.0.2.2
   // For physical device on same Wi-Fi, use your machine's local IP.
-  static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
+  static const String apiBaseUrl = 'http://192.168.137.73:5000/api';
 
   // Route names
   static const String loginRoute = '/login';
