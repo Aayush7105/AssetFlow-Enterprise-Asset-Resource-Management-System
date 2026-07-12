@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
-import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { useERPStore, AssetCategory } from "@/stores/erp.store"
 import { useToast } from "@/hooks/use-toast"
@@ -271,19 +270,17 @@ export default function AssetCategoriesPage() {
 
               <div>
                 <label className="text-muted-foreground block mb-1">Theme Color</label>
-                <ComboSelect
-                  options={[
-                    { value: "blue", label: "Blue" },
-                    { value: "green", label: "Green" },
-                    { value: "amber", label: "Amber" },
-                    { value: "purple", label: "Purple" },
-                    { value: "pink", label: "Pink" },
-                  ]}
+                <select
                   value={editForm.color}
-                  onValueChange={(val) => setEditForm({ ...editForm, color: val })}
-                  placeholder="Select Color"
-                  searchable={false}
-                />
+                  onChange={(e) => setEditForm({ ...editForm, color: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="blue">Blue</option>
+                  <option value="green">Green</option>
+                  <option value="amber">Amber</option>
+                  <option value="purple">Purple</option>
+                  <option value="pink">Pink</option>
+                </select>
               </div>
             </div>
 

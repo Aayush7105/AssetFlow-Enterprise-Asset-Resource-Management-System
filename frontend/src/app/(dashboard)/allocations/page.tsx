@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
-import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Allocation } from "@/stores/erp.store"
@@ -141,19 +140,16 @@ export default function AllocationsPage() {
         <div className="flex flex-1 items-center gap-2 max-w-sm">
           <SearchBar value={search} onChange={setSearch} placeholder="Search by asset, assignee or dept..." />
         </div>
-        <ComboSelect
-          options={[
-            { value: "all", label: "All Allocations" },
-            { value: "Active", label: "Active" },
-            { value: "Returned", label: "Returned" },
-            { value: "Overdue", label: "Overdue" },
-          ]}
+        <select
           value={statusFilter}
-          onValueChange={setStatusFilter}
-          placeholder="All Allocations"
-          searchable={false}
-          className="w-44 bg-card"
-        />
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="h-9 px-3 rounded-lg border border-border bg-card text-[13px] outline-none cursor-pointer focus:ring-1 focus:ring-ring"
+        >
+          <option value="all">All Allocations</option>
+          <option value="Active">Active</option>
+          <option value="Returned">Returned</option>
+          <option value="Overdue">Overdue</option>
+        </select>
       </div>
 
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
@@ -260,34 +256,34 @@ export default function AllocationsPage() {
             <div className="grid gap-3.5">
               <div>
                 <label className="text-muted-foreground block mb-1">Select Available Asset</label>
-                <ComboSelect
-                  options={assets
-                    .filter((a) => a.status === "Available")
-                    .map((a) => ({
-                      value: a.id,
-                      label: a.name,
-                      description: a.assetTag,
-                    }))}
+                <select
+                  required
                   value={allocForm.assetId}
-                  onValueChange={(val) => setAllocForm({ ...allocForm, assetId: val })}
-                  placeholder="Select Asset"
-                  searchPlaceholder="Search available assets..."
-                />
+                  onChange={(e) => setAllocForm({ ...allocForm, assetId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Asset</option>
+                  {assets
+                    .filter((a) => a.status === "Available")
+                    .map((a) => (
+                      <option key={a.id} value={a.id}>{a.name} ({a.assetTag})</option>
+                    ))}
+                </select>
               </div>
 
               <div>
                 <label className="text-muted-foreground block mb-1">Assignee (Employee)</label>
-                <ComboSelect
-                  options={employees.map((emp) => ({
-                    value: emp.id,
-                    label: emp.name,
-                    description: emp.department,
-                  }))}
+                <select
+                  required
                   value={allocForm.employeeId}
-                  onValueChange={(val) => setAllocForm({ ...allocForm, employeeId: val })}
-                  placeholder="Select Employee"
-                  searchPlaceholder="Search employees..."
-                />
+                  onChange={(e) => setAllocForm({ ...allocForm, employeeId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>{emp.name} ({emp.department})</option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -331,19 +327,19 @@ export default function AllocationsPage() {
 
               <div>
                 <label className="text-muted-foreground block mb-1">Transfer to Employee</label>
-                <ComboSelect
-                  options={employees
-                    .filter((e) => e.name !== activeAllocation?.employeeName)
-                    .map((emp) => ({
-                      value: emp.id,
-                      label: emp.name,
-                      description: emp.department,
-                    }))}
+                <select
+                  required
                   value={transferForm.employeeId}
-                  onValueChange={(val) => setTransferForm({ ...transferForm, employeeId: val })}
-                  placeholder="Select Assignee"
-                  searchPlaceholder="Search employees..."
-                />
+                  onChange={(e) => setTransferForm({ ...transferForm, employeeId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Assignee</option>
+                  {employees
+                    .filter((e) => e.name !== activeAllocation?.employeeName)
+                    .map((emp) => (
+                      <option key={emp.id} value={emp.id}>{emp.name} ({emp.department})</option>
+                    ))}
+                </select>
               </div>
             </div>
 

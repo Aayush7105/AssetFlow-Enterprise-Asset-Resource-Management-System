@@ -17,7 +17,7 @@ import { ROUTES } from "@/lib/constants"
 import { loginSchema, type LoginFormData } from "@/lib/validators"
 import { useAuth, DEMO_USERS } from "@/modules/auth/hooks"
 import { useRouter } from "next/navigation"
-import { Loader2, Eye, EyeOff, Shield } from "lucide-react"
+import { Loader2, Eye, EyeOff, ArrowRight } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -44,20 +44,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-[440px] w-full p-6 sm:p-8 bg-[#09090B] border border-[#27272A] rounded-2xl shadow-xl">
-      {/* HEADER WITH LOGO */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-[#FAFAFA] text-[#09090B]">
-            <Shield className="size-4" />
+    <div className="flex flex-col gap-8">
+      <div className="space-y-2">
+        <div className="mb-6 flex items-center gap-2.5">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <svg
+              className="size-[18px]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
           </div>
-          <span className="text-base font-semibold tracking-tight text-white font-mono">AssetFlow</span>
+          <span className="text-lg font-semibold tracking-tight">AssetFlow</span>
         </div>
 
-        <div className="space-y-1 pt-2">
-          <h2 className="text-2xl font-semibold tracking-tight text-white">Welcome back</h2>
-          <p className="text-[13px] text-neutral-400">Sign in to continue to AssetFlow.</p>
-        </div>
+        <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+        <p className="text-sm text-muted-foreground">
+          Sign in to your account to continue
+        </p>
       </div>
 
       <Form {...form}>
@@ -66,19 +77,19 @@ export default function LoginPage() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="space-y-1.5">
-                <FormLabel className="text-xs font-medium text-neutral-300">Email</FormLabel>
+              <FormItem>
+                <FormLabel className="text-sm">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="name@company.com"
                     autoComplete="email"
                     disabled={isSubmitting}
-                    className="h-10 bg-[#18181B] border-[#27272A] text-white placeholder:text-neutral-500 focus:ring-1 focus:ring-ring text-sm"
+                    className="h-11"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-rose-400 text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -87,12 +98,12 @@ export default function LoginPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="space-y-1.5">
+              <FormItem>
                 <div className="flex items-center justify-between">
-                  <FormLabel className="text-xs font-medium text-neutral-300">Password</FormLabel>
+                  <FormLabel className="text-sm">Password</FormLabel>
                   <a
                     href={ROUTES.FORGOT_PASSWORD}
-                    className="text-[11px] text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-200"
                   >
                     Forgot password?
                   </a>
@@ -104,13 +115,13 @@ export default function LoginPage() {
                       placeholder="Enter your password"
                       autoComplete="current-password"
                       disabled={isSubmitting}
-                      className="h-10 pr-10 bg-[#18181B] border-[#27272A] text-white placeholder:text-neutral-500 focus:ring-1 focus:ring-ring text-sm"
+                      className="h-11 pr-10"
                       {...field}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors duration-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
                       tabIndex={-1}
                     >
                       {showPassword ? (
@@ -121,34 +132,30 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </FormControl>
-                <FormMessage className="text-rose-400 text-xs" />
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* High spacing between Password and Sign In */}
-          <div className="pt-4">
-            <Button
-              type="submit"
-              className="w-full h-12 text-sm font-medium bg-[#FAFAFA] hover:bg-neutral-200 text-[#09090B] rounded-lg shadow-md hover:scale-[1.005] active:scale-[0.995] transition-all duration-150"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="size-4 animate-spin mr-2" />
-                  Signing in...
-                </>
-              ) : (
-                "Sign in"
-              )}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            className="w-full h-11 text-sm font-medium"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              "Sign in"
+            )}
+          </Button>
         </form>
       </Form>
 
-      {/* QUICK DEMO ACCOUNTS */}
-      <div className="space-y-2.5 pt-4 border-t border-[#27272A]">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+      <div className="space-y-3 pt-4 border-t border-border/50">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           Quick Demo Accounts (Click to log in)
         </p>
         <div className="grid grid-cols-2 gap-2">
@@ -161,23 +168,32 @@ export default function LoginPage() {
                 form.setValue("password", user.password)
                 form.handleSubmit(onSubmit)()
               }}
-              className="flex flex-col text-left p-2.5 rounded-lg border border-[#27272A] bg-[#18181B]/50 hover:bg-[#202024] hover:border-neutral-500 cursor-pointer transition-all duration-200"
+              className="flex flex-col text-left p-3 rounded-lg border border-border/80 bg-muted/20 hover:bg-accent/50 hover:border-border/100 hover:scale-[1.02] cursor-pointer transition-all duration-200"
             >
-              <span className="text-[11px] font-semibold text-white truncate">{user.name}</span>
-              <span className="text-[9px] text-neutral-400 uppercase font-medium mt-0.5 tracking-wider">{user.role.replace("_", " ")}</span>
+              <span className="text-xs font-semibold text-foreground truncate">{user.name}</span>
+              <span className="text-[10px] text-muted-foreground uppercase font-medium mt-0.5">{user.role.replace("_", " ")}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* FOOTER */}
-      <div className="pt-2 text-center">
-        <p className="text-xs text-neutral-400 leading-normal">
+      <div className="space-y-4 pt-2">
+        <p className="text-xs text-center text-muted-foreground/70">
           Already invited?{" "}
-          <span className="text-neutral-500">
-            Contact your administrator.
+          <span className="text-foreground/50">
+            Contact your administrator for access.
           </span>
         </p>
+
+        <div className="flex justify-end">
+          <a
+            href={ROUTES.REGISTER_COMPANY}
+            className="group inline-flex items-center gap-1 text-xs text-muted-foreground/50 hover:text-foreground transition-colors duration-300"
+          >
+            Register your Organization
+            <ArrowRight className="size-3 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </a>
+        </div>
       </div>
     </div>
   )

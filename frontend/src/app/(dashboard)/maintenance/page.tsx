@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
-import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, MaintenanceRequest } from "@/stores/erp.store"
@@ -245,16 +244,17 @@ export default function MaintenancePage() {
             <div className="grid gap-3.5">
               <div>
                 <label className="text-muted-foreground block mb-1">Select Asset</label>
-                <ComboSelect
-                  options={assets.map((a) => ({ value: a.id, label: a.name, description: a.assetTag }))}
+                <select
+                  required
                   value={reqForm.assetId}
-                  onValueChange={(val) => {
-                    const asset = assets.find((a) => a.id === val)
-                    setReqForm({ ...reqForm, assetId: val, assetName: asset?.name || "" })
-                  }}
-                  placeholder="Select Asset"
-                  searchPlaceholder="Search assets..."
-                />
+                  onChange={(e) => setReqForm({ ...reqForm, assetId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Asset</option>
+                  {assets.map((a) => (
+                    <option key={a.id} value={a.id}>{a.name} ({a.assetTag})</option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -271,17 +271,15 @@ export default function MaintenancePage() {
 
               <div>
                 <label className="text-muted-foreground block mb-1">Priority</label>
-                <ComboSelect
-                  options={[
-                    { value: "High", label: "High" },
-                    { value: "Medium", label: "Medium" },
-                    { value: "Low", label: "Low" },
-                  ]}
+                <select
                   value={reqForm.priority}
-                  onValueChange={(val) => setReqForm({ ...reqForm, priority: val as any })}
-                  placeholder="Select Priority"
-                  searchable={false}
-                />
+                  onChange={(e) => setReqForm({ ...reqForm, priority: e.target.value as any })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
               </div>
             </div>
 

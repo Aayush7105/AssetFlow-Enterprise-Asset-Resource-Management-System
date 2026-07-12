@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
-import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, Asset } from "@/stores/erp.store"
@@ -349,29 +348,29 @@ export default function AssetsPage() {
         </div>
         <div className="flex items-center gap-2">
           {/* Category Filter */}
-          <ComboSelect
-            options={[{ value: "all", label: "All Categories" }, ...categories.map((c) => ({ value: c.name, label: c.name }))]}
+          <select
             value={selectedCategory}
-            onValueChange={setSelectedCategory}
-            placeholder="All Categories"
-            searchPlaceholder="Search categories..."
-            className="w-40 bg-card"
-          />
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="h-9 px-3 rounded-lg border border-border bg-card text-[13px] outline-none cursor-pointer focus:ring-1 focus:ring-ring"
+          >
+            <option value="all">All Categories</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.name}>{c.name}</option>
+            ))}
+          </select>
 
-          <ComboSelect
-            options={[
-              { value: "all", label: "All Statuses" },
-              { value: "Available", label: "Available" },
-              { value: "Allocated", label: "Allocated" },
-              { value: "Under Maintenance", label: "Under Maintenance" },
-              { value: "Disposed", label: "Disposed" },
-            ]}
+          {/* Status Filter */}
+          <select
             value={selectedStatus}
-            onValueChange={setSelectedStatus}
-            placeholder="All Statuses"
-            searchable={false}
-            className="w-40 bg-card"
-          />
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="h-9 px-3 rounded-lg border border-border bg-card text-[13px] outline-none cursor-pointer focus:ring-1 focus:ring-ring"
+          >
+            <option value="all">All Statuses</option>
+            <option value="Available">Available</option>
+            <option value="Allocated">Allocated</option>
+            <option value="Under Maintenance">Under Maintenance</option>
+            <option value="Disposed">Disposed</option>
+          </select>
 
           {selectedIds.length > 0 && (
             <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="h-9">
@@ -571,13 +570,17 @@ export default function AssetsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Category</label>
-                  <ComboSelect
-                    options={categories.map((c) => ({ value: c.name, label: c.name }))}
+                  <select
+                    required
                     value={formData.category}
-                    onValueChange={(val) => setFormData({ ...formData, category: val })}
-                    placeholder="Select Category"
-                    searchPlaceholder="Search categories..."
-                  />
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="text-muted-foreground block mb-1">Serial Number</label>
@@ -616,32 +619,28 @@ export default function AssetsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Condition</label>
-                  <ComboSelect
-                    options={[
-                      { value: "NEW", label: "New" },
-                      { value: "GOOD", label: "Good" },
-                      { value: "FAIR", label: "Fair" },
-                      { value: "POOR", label: "Poor" },
-                    ]}
+                  <select
                     value={formData.condition}
-                    onValueChange={(val) => setFormData({ ...formData, condition: val as Asset["condition"] })}
-                    placeholder="Select Condition"
-                    searchable={false}
-                  />
+                    onChange={(e) => setFormData({ ...formData, condition: e.target.value as Asset["condition"] })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="NEW">New</option>
+                    <option value="GOOD">Good</option>
+                    <option value="FAIR">Fair</option>
+                    <option value="POOR">Poor</option>
+                  </select>
                 </div>
                 <div>
                   <label className="text-muted-foreground block mb-1">Initial Status</label>
-                  <ComboSelect
-                    options={[
-                      { value: "Available", label: "Available" },
-                      { value: "Allocated", label: "Allocated" },
-                      { value: "Under Maintenance", label: "Under Maintenance" },
-                    ]}
+                  <select
                     value={formData.status}
-                    onValueChange={(val) => setFormData({ ...formData, status: val as Asset["status"] })}
-                    placeholder="Select Status"
-                    searchable={false}
-                  />
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as Asset["status"] })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="Available">Available</option>
+                    <option value="Allocated">Allocated</option>
+                    <option value="Under Maintenance">Under Maintenance</option>
+                  </select>
                 </div>
               </div>
 
@@ -649,20 +648,24 @@ export default function AssetsPage() {
                 <div className="grid grid-cols-2 gap-3 border border-border/50 rounded-lg p-3 bg-muted/10">
                   <div>
                     <label className="text-muted-foreground block mb-1">Assign Employee</label>
-                    <ComboSelect
-                      options={employees.map((e) => ({ value: e.name, label: e.name, description: e.department }))}
+                    <select
+                      required
                       value={formData.assignedEmployee}
-                      onValueChange={(val) => {
-                        const emp = employees.find((emp) => emp.name === val)
+                      onChange={(e) => {
+                        const emp = employees.find((emp) => emp.name === e.target.value)
                         setFormData({
                           ...formData,
-                          assignedEmployee: val,
+                          assignedEmployee: e.target.value,
                           department: emp ? emp.department : "",
                         })
                       }}
-                      placeholder="Select Employee"
-                      searchPlaceholder="Search employees..."
-                    />
+                      className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.map((e) => (
+                        <option key={e.id} value={e.name}>{e.name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="text-muted-foreground block mb-1">Department</label>
@@ -725,13 +728,17 @@ export default function AssetsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Category</label>
-                  <ComboSelect
-                    options={categories.map((c) => ({ value: c.name, label: c.name }))}
+                  <select
+                    required
                     value={formData.category}
-                    onValueChange={(val) => setFormData({ ...formData, category: val })}
-                    placeholder="Select Category"
-                    searchPlaceholder="Search categories..."
-                  />
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="text-muted-foreground block mb-1">Serial Number</label>
@@ -758,18 +765,16 @@ export default function AssetsPage() {
                 </div>
                 <div>
                   <label className="text-muted-foreground block mb-1">Condition</label>
-                  <ComboSelect
-                    options={[
-                      { value: "NEW", label: "New" },
-                      { value: "GOOD", label: "Good" },
-                      { value: "FAIR", label: "Fair" },
-                      { value: "POOR", label: "Poor" },
-                    ]}
+                  <select
                     value={formData.condition}
-                    onValueChange={(val) => setFormData({ ...formData, condition: val as Asset["condition"] })}
-                    placeholder="Select Condition"
-                    searchable={false}
-                  />
+                    onChange={(e) => setFormData({ ...formData, condition: e.target.value as Asset["condition"] })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="NEW">New</option>
+                    <option value="GOOD">Good</option>
+                    <option value="FAIR">Fair</option>
+                    <option value="POOR">Poor</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -801,17 +806,17 @@ export default function AssetsPage() {
 
               <div>
                 <label className="text-muted-foreground block mb-1">Employee</label>
-                <ComboSelect
-                  options={employees.map((e) => ({
-                    value: e.id,
-                    label: e.name,
-                    description: e.department,
-                  }))}
+                <select
+                  required
                   value={allocationForm.employeeId}
-                  onValueChange={(val) => setAllocationForm({ ...allocationForm, employeeId: val })}
-                  placeholder="Select Assignee"
-                  searchPlaceholder="Search employees..."
-                />
+                  onChange={(e) => setAllocationForm({ ...allocationForm, employeeId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Assignee</option>
+                  {employees.map((e) => (
+                    <option key={e.id} value={e.id}>{e.name} ({e.department})</option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -855,17 +860,17 @@ export default function AssetsPage() {
 
               <div>
                 <label className="text-muted-foreground block mb-1">Transfer To (Employee)</label>
-                <ComboSelect
-                  options={employees.map((e) => ({
-                    value: e.id,
-                    label: e.name,
-                    description: e.department,
-                  }))}
+                <select
+                  required
                   value={transferForm.employeeId}
-                  onValueChange={(val) => setTransferForm({ ...transferForm, employeeId: val })}
-                  placeholder="Select New Assignee"
-                  searchPlaceholder="Search employees..."
-                />
+                  onChange={(e) => setTransferForm({ ...transferForm, employeeId: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select New Assignee</option>
+                  {employees.map((e) => (
+                    <option key={e.id} value={e.id}>{e.name} ({e.department})</option>
+                  ))}
+                </select>
               </div>
             </div>
 

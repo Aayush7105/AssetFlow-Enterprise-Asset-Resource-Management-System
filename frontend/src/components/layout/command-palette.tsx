@@ -194,11 +194,11 @@ export function CommandPalette() {
             <span>Register Asset</span>
           </CommandItem>
           <CommandItem
-            onSelect={() => handleNavigate("/organization/employees?action=invite", "Add Employee")}
+            onSelect={() => handleNavigate("/organization/employees?action=invite", "Invite Employee")}
             className="h-8.5 rounded-lg text-[13px] text-foreground hover:bg-accent cursor-pointer px-2"
           >
             <PlusCircle className="size-3.5 mr-2 text-emerald-500" />
-            <span>Add Employee</span>
+            <span>Invite Employee</span>
           </CommandItem>
           <CommandItem
             onSelect={() => handleNavigate("/organization/departments?action=create", "Create Department")}

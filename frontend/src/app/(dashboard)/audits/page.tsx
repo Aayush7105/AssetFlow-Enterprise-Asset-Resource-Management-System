@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/shared/page-header"
 import { SearchBar } from "@/components/shared/search-bar"
-import { ComboSelect } from "@/components/shared/combo-select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useERPStore, AuditCycle } from "@/stores/erp.store"
@@ -205,46 +204,46 @@ export default function AuditsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-muted-foreground block mb-1">Scope</label>
-                  <ComboSelect
-                    options={[
-                      { value: "Full Company", label: "Full Company" },
-                      { value: "Department Only", label: "Department Only" },
-                      { value: "High Value Assets", label: "High Value Assets" },
-                    ]}
+                  <select
                     value={auditForm.scope}
-                    onValueChange={(val) => setAuditForm({ ...auditForm, scope: val })}
-                    placeholder="Select Scope"
-                    searchable={false}
-                  />
+                    onChange={(e) => setAuditForm({ ...auditForm, scope: e.target.value })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="Full Company">Full Company</option>
+                    <option value="Department Only">Department Only</option>
+                    <option value="High Value Assets">High Value Assets</option>
+                  </select>
                 </div>
                 <div>
                   <label className="text-muted-foreground block mb-1">Auditor</label>
-                  <ComboSelect
-                    options={employees.filter((emp) => emp.role === "admin" || emp.role === "asset_manager" || emp.role === "department_head").map((e) => ({
-                      value: e.name,
-                      label: e.name,
-                      description: e.role.replace(/_/g, " "),
-                    }))}
+                  <select
+                    required
                     value={auditForm.auditor}
-                    onValueChange={(val) => setAuditForm({ ...auditForm, auditor: val })}
-                    placeholder="Select Auditor"
-                    searchPlaceholder="Search auditors..."
-                  />
+                    onChange={(e) => setAuditForm({ ...auditForm, auditor: e.target.value })}
+                    className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="">Select Auditor</option>
+                    {employees.filter((emp) => emp.role === "auditor" || emp.role === "admin").map((e) => (
+                      <option key={e.id} value={e.name}>{e.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               <div>
                 <label className="text-muted-foreground block mb-1">Department</label>
-                <ComboSelect
-                  options={[
-                    { value: "All Departments", label: "All Departments" },
-                    ...departments.map((d) => ({ value: d.name, label: d.name })),
-                  ]}
+                <select
+                  required
                   value={auditForm.department}
-                  onValueChange={(val) => setAuditForm({ ...auditForm, department: val })}
-                  placeholder="Select Department"
-                  searchPlaceholder="Search departments..."
-                />
+                  onChange={(e) => setAuditForm({ ...auditForm, department: e.target.value })}
+                  className="w-full h-9 px-3 rounded-lg border border-border bg-background outline-none text-sm focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">Select Department</option>
+                  <option value="All Departments">All Departments</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.name}>{d.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

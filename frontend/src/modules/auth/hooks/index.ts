@@ -44,6 +44,16 @@ export const DEMO_USERS = [
     organizationName: "Acme Enterprise",
     isOnboarded: true,
   },
+  {
+    id: "demo-auditor-id",
+    email: "auditor@assetflow.com",
+    password: "AuditorPassword123",
+    name: "Audrey Auditor",
+    role: "auditor" as const,
+    organizationId: "org-1",
+    organizationName: "Acme Enterprise",
+    isOnboarded: true,
+  },
 ]
 
 export function useAuth() {

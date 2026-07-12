@@ -184,7 +184,7 @@ export const useERPStore = create<ERPState>((set) => ({
     { id: "4", name: "John Doe", email: "john.doe@company.com", department: "Engineering", role: "employee", status: "Active", invitationStatus: "Accepted" },
     { id: "5", name: "Alex Smith", email: "alex.smith@company.com", department: "Operations", role: "asset_manager", status: "Active", invitationStatus: "Accepted" },
     { id: "6", name: "Emily Watson", email: "emily.watson@company.com", department: "Engineering", role: "department_head", status: "Active", invitationStatus: "Accepted" },
-    { id: "7", name: "Robert Taylor", email: "robert.t@company.com", department: "Finance", role: "employee", status: "Active", invitationStatus: "Pending" },
+    { id: "7", name: "Robert Taylor", email: "robert.t@company.com", department: "Finance", role: "auditor", status: "Active", invitationStatus: "Pending" },
   ],
   departments: [
     { id: "1", name: "Engineering", parentDepartment: "None", head: "Emily Watson", employeeCount: 48, status: "Active" },
