@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/layout/app-sidebar"
@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <SidebarInset>
         <AppNavbar />
-        <main className="flex-1 p-6 lg:p-8 xl:p-10">
+        <main className="flex-1 p-4 lg:p-6">
           {children}
         </main>
       </SidebarInset>
