@@ -35,4 +35,3 @@ const seedUser = async () => {
 };
 
 seedUser();
-

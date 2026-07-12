@@ -49,4 +49,19 @@ class ApiService {
     );
     return jsonDecode(response.body) as Map<String, dynamic>;
   }
+
+  /// PUT request.
+  Future<Map<String, dynamic>> put(
+    String path, {
+    Map<String, dynamic>? body,
+    bool authenticated = true,
+  }) async {
+    final url = Uri.parse('${AppConstants.apiBaseUrl}$path');
+    final response = await http.put(
+      url,
+      headers: _headers(authenticated: authenticated),
+      body: body != null ? jsonEncode(body) : null,
+    );
+    return jsonDecode(response.body) as Map<String, dynamic>;
+  }
 }

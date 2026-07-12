@@ -160,21 +160,56 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: (user?.role == 'ADMIN' || 
+                             user?.role == 'ASSET_MANAGER' || 
+                             user?.role == 'DEPARTMENT_HEAD')
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/asset-form');
+              },
+              child: const Icon(Icons.add_rounded),
+            )
+          : null,
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toUpperCase()) {
+      case 'AVAILABLE':
+        return Colors.green.shade500;
+      case 'ALLOCATED':
+      case 'IN_USE':
+        return Colors.blue.shade500;
+      case 'RESERVED':
+        return Colors.amber.shade500;
+      case 'UNDER_MAINTENANCE':
+      case 'MAINTENANCE':
+        return Colors.orange.shade500;
+      case 'LOST':
+        return Colors.red.shade700;
+      case 'RETIRED':
+        return Colors.red.shade500;
+      case 'DISPOSED':
+        return Colors.grey.shade500;
+      default:
+        return Colors.grey.shade500;
+    }
   }
 
   Color _roleBadgeColor(String role) {
     switch (role) {
       case 'ADMIN':
-        return Colors.amber;
-      case 'ASSET_MANAGER':
-        return Colors.tealAccent;
+        return Colors.amber.shade500;
       case 'DEPARTMENT_HEAD':
-        return Colors.lightBlueAccent;
+        return Colors.teal.shade500;
+      case 'ASSET_MANAGER':
+        return Colors.blue.shade500;
+      case 'AUDITOR':
+        return Colors.purple.shade500;
       case 'EMPLOYEE':
-        return Colors.purpleAccent;
+        return Colors.grey.shade500;
       default:
-        return Colors.grey;
+        return Colors.grey.shade500;
     }
   }
 

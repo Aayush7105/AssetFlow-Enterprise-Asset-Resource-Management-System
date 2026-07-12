@@ -95,4 +95,3 @@ const seedMockData = async () => {
 };
 
 seedMockData();
-

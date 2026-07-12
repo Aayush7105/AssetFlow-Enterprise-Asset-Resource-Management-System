@@ -8,6 +8,7 @@ import 'package:qr_scanner/screens/login_screen.dart';
 import 'package:qr_scanner/screens/home_screen.dart';
 import 'package:qr_scanner/screens/scanner_screen.dart';
 import 'package:qr_scanner/screens/asset_detail_screen.dart';
+import 'package:qr_scanner/screens/asset_form_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +76,15 @@ class _AssetFlowAppState extends State<AssetFlowApp> {
           case AppConstants.assetDetailRoute:
             final asset = settings.arguments as Asset;
             return MaterialPageRoute(
-              builder: (_) => AssetDetailScreen(asset: asset),
+              builder: (_) => AssetDetailScreen(
+                asset: asset, 
+                authService: _authService
+              ),
+            );
+          case AppConstants.assetFormRoute:
+            final asset = settings.arguments as Asset?;
+            return MaterialPageRoute(
+              builder: (_) => AssetFormScreen(asset: asset),
             );
           default:
             return MaterialPageRoute(
