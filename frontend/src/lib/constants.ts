@@ -1,4 +1,4 @@
-﻿export const APP_NAME = "AssetFlow"
+export const APP_NAME = "AssetFlow"
 
 export const ROUTES = {
   HOME: "/",
@@ -21,6 +21,10 @@ export const ROUTES = {
   REPORTS: "/reports",
   NOTIFICATIONS: "/notifications",
   SETTINGS: "/settings",
+  ORGANIZATION_EMPLOYEES: "/organization/employees",
+  ORGANIZATION_DEPARTMENTS: "/organization/departments",
+  ORGANIZATION_ROLES: "/organization/roles",
+  ORGANIZATION_ASSET_CATEGORIES: "/organization/asset-categories",
 } as const
 
 export const ROLES = [
