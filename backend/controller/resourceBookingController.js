@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { notifyUser } = require("../utils/notificationService");
 
 const createBooking = async (req, res) => {
     try {
@@ -100,6 +101,15 @@ const createBooking = async (req, res) => {
         );
 
         await db.query("COMMIT");
+
+        await notifyUser({
+            user_id: req.user.id,
+            title: "Booking confirmed",
+            message: `${asset.name} is booked for ${title}.`,
+            type: "BOOKING_CONFIRMED",
+            reference_type: "BOOKING",
+            reference_id: booking.rows[0].id
+        });
 
         return res.status(201).json({
             success: true,
@@ -331,6 +341,15 @@ const updateBooking = async (req, res) => {
 
         await db.query("COMMIT");
 
+        await notifyUser({
+            user_id: booking.user_id,
+            title: "Booking updated",
+            message: `Your booking ${title} has been updated.`,
+            type: "BOOKING_UPDATED",
+            reference_type: "BOOKING",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Booking updated successfully.",
@@ -399,6 +418,15 @@ const cancelBooking = async (req, res) => {
             `,
             [id]
         );
+
+        await notifyUser({
+            user_id: booking.user_id,
+            title: "Booking cancelled",
+            message: "Your booking has been cancelled.",
+            type: "BOOKING_CANCELLED",
+            reference_type: "BOOKING",
+            reference_id: id
+        });
 
         return res.status(200).json({
             success: true,

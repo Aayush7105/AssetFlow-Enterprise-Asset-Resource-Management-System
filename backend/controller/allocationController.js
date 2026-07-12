@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const { createActivityLog } = require("../utils/activityLogService");
+const { notifyUser } = require("../utils/notificationService");
 const allocateAsset = async (req, res) => {
     try {
 
@@ -131,6 +132,15 @@ const allocateAsset = async (req, res) => {
     description:"Allocated asset to employee."
 
 });
+
+        await notifyUser({
+            user_id,
+            title: "Asset assigned",
+            message: `${asset.name} has been assigned to you.`,
+            type: "ASSET_ASSIGNED",
+            reference_type: "ALLOCATION",
+            reference_id: allocationResult.rows[0].id
+        });
 
         return res.status(201).json({
             success: true,
@@ -344,6 +354,15 @@ const returnAsset = async (req, res) => {
 
         await db.query("COMMIT");
 
+        await notifyUser({
+            user_id: allocation.user_id,
+            title: "Asset returned",
+            message: "Your asset return has been recorded.",
+            type: "ASSET_RETURNED",
+            reference_type: "ALLOCATION",
+            reference_id: id
+        });
+
         return res.status(200).json({
             success: true,
             message: "Asset returned successfully."
@@ -449,3 +468,5 @@ module.exports = {
     returnAsset,
     getAssetAllocationHistory
 };
+
+

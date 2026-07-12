@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,23 +19,31 @@ import { ROUTES } from "@/lib/constants"
 import { useAuthStore } from "@/stores/auth.store"
 import { useAuth } from "@/modules/auth/hooks"
 import { useERPStore } from "@/stores/erp.store"
+import { notificationService } from "@/modules/notifications/services"
 
 export function AppNavbar() {
   const { theme, setTheme } = useTheme()
   const unreadCount = useNotificationStore((s) => s.unreadCount)
+  const setUnreadCount = useNotificationStore((s) => s.setUnreadCount)
   const router = useRouter()
   const user = useAuthStore((s) => s.user)
   const { logout } = useAuth()
   const setCommandPaletteOpen = useERPStore((s) => s.setCommandPaletteOpen)
 
-  const displayName = user?.name || "John Doe"
-  const email = user?.email || "john@company.com"
+  const displayName = user?.name || "Account"
+  const email = user?.email || ""
   const displayRole = user?.role || "admin"
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()
+
+  useEffect(() => {
+    notificationService.getNotifications()
+      .then((response) => setUnreadCount(response.unread))
+      .catch((error) => console.warn("Could not load notification count:", error))
+  }, [setUnreadCount])
 
   const handleLogout = async () => {
     await logout()
@@ -141,3 +150,5 @@ export function AppNavbar() {
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ")
 }
+
+

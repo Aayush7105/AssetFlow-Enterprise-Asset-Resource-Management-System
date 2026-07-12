@@ -27,7 +27,7 @@ function getQueryClient() {
 }
 
 import { useEffect } from "react"
-import { useAuthStore, DEFAULT_ADMIN_USER } from "@/stores/auth.store"
+import { useAuthStore } from "@/stores/auth.store"
 import { useSettingsStore } from "@/stores/settings.store"
 import { AnimatePresence } from "framer-motion"
 import { AuthLoader } from "@/components/auth/AuthLoader"
@@ -70,3 +70,4 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   )
 }
+

@@ -1,25 +1,14 @@
-﻿"use client"
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle2, Building2, Globe, Mail, Phone, Clock } from "lucide-react"
-
-const MOCK_ORG = {
-  name: "Acme Corporation",
-  industry: "Technology",
-  email: "admin@acme.com",
-  phone: "+1 (555) 000-0000",
-  country: "United States",
-  timezone: "Eastern Time (US & Canada)",
-}
+import { CheckCircle2, Building2, Mail, User } from "lucide-react"
+import { useAuthStore } from "@/stores/auth.store"
 
 export default function CompanyPage() {
+  const user = useAuthStore((state) => state.user)
   const details = [
-    { icon: Building2, label: "Organization", value: MOCK_ORG.name },
-    { icon: Globe, label: "Industry", value: MOCK_ORG.industry },
-    { icon: Mail, label: "Company Email", value: MOCK_ORG.email },
-    { icon: Phone, label: "Phone", value: MOCK_ORG.phone },
-    { icon: Globe, label: "Country", value: MOCK_ORG.country },
-    { icon: Clock, label: "Timezone", value: MOCK_ORG.timezone },
+    { icon: Building2, label: "Organization", value: user?.organizationName || "AssetFlow" },
+    { icon: User, label: "Admin", value: user?.name || "Not provided" },
+    { icon: Mail, label: "Admin Email", value: user?.email || "Not provided" },
   ]
 
   return (
