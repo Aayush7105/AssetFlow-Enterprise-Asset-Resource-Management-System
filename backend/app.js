@@ -5,11 +5,10 @@ const db = require("./config/db");
 const createUserTable = require("./models/User");
 const createUserRoleTable = require("./models/UserRole");
 const createDepartmentTable = require("./models/Department");
-const addConstraints = require("./models/Constraints");
-const assetCategoryTable = require("./models/assetCategory");
-const assetTable = require("./models/asset");
-const allocationTable = require("./models/allocation");
+const addConstraints = require("./models/constraints");
 const createAssetCategoryTable = require("./models/AssetCategory");
+const createAssetTable = require("./models/Asset");
+const createAllocationTable = require("./models/Allocation");
 const createResourceBookingTable = require("./models/ResourceBooking");
 const createMaintenanceRequestTable = require("./models/MaintenanceRequest");
 const createAuditCycleTable = require("./models/AuditCycle");
@@ -17,7 +16,7 @@ const createAuditItemTable = require("./models/AuditItem");
 const createNotificationTable = require("./models/Notification");
 const createActivityLogTable = require("./models/ActivityLog");
 const userRoutes = require("./routes/UserRoutes");
-const departmentRoutes = require("./routes/DepartmentRoutes");
+const departmentRoutes = require("./routes/departmentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const assetCategoryRoutes = require("./routes/assetCategoryRoutes");
 const assetRoutes = require("./routes/assetRoutes");
@@ -25,12 +24,19 @@ const allocationRoutes = require("./routes/allocationRoutes");
 const resourceBookingRoutes = require("./routes/resourceBookingRoutes");    
 const transferRequestRoutes = require("./routes/transferRequestRoutes");
 const maintenanceRoutes = require("./routes/maintenanceRoutes");
+const auditRoutes = require("./routes/auditRoutes");
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true
+}));
 app.use(express.json());
 
+app.get("/api/health", (req, res) => {
+    res.status(200).json({ success: true, message: "AssetFlow API is running" });
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/asset-categories", assetCategoryRoutes);
@@ -38,8 +44,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/assets", assetRoutes);
 app.use("/api/allocations", allocationRoutes);
-// app.use("/api/resource-bookings", resourceBookingRoutes);
+app.use("/api/resource-bookings", resourceBookingRoutes);
 app.use("/api/transfer-requests", transferRequestRoutes);
+app.use("/api/maintenance", maintenanceRoutes);
+app.use("/api/audits", auditRoutes);
 db.connect().then(async() => {
     console.log("Connected to the database");
     await createUserTable();
@@ -50,14 +58,12 @@ db.connect().then(async() => {
     console.log("Department table created or already exists");
     await addConstraints();
     console.log("Constraints added or already exist");
-    await assetCategoryTable();
-    console.log("AssetCategory table created or already exists");
-    await assetTable();
-    console.log("Asset table created or already exists");
-    await allocationTable();
-    console.log("Allocation table created or already exists");
     await createAssetCategoryTable();
     console.log("AssetCategory table created or already exists");
+    await createAssetTable();
+    console.log("Asset table created or already exists");
+    await createAllocationTable();
+    console.log("Allocation table created or already exists");
     await createResourceBookingTable();
     console.log("ResourceBookings table created or already exists");
     await createMaintenanceRequestTable();

@@ -1,6 +1,7 @@
 "use client"
 
 import { useAuthStore } from "@/stores/auth.store"
+import { authService } from "@/modules/auth/services"
 import { toast } from "sonner"
 
 export const DEMO_USERS = [
@@ -61,31 +62,25 @@ export function useAuth() {
   const clearUser = useAuthStore((s) => s.logout)
 
   const login = async (credentials: { email: string; password: string }) => {
-    await new Promise((r) => setTimeout(r, 800))
-
-    const user = DEMO_USERS.find(
-      (u) =>
-        u.email.toLowerCase() === credentials.email.toLowerCase() &&
-        u.password === credentials.password
-    )
-
-    if (user) {
+    try {
+      const user = await authService.login(credentials)
       setUser(user)
       toast.success(`Welcome back, ${user.name}! Logged in as ${user.role}.`)
       return user
-    } else {
-      toast.error("Invalid email or password. Please use one of the demo accounts.")
-      throw new Error("Invalid credentials")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Invalid email or password.")
+      throw error
     }
   }
 
   const logout = async () => {
+    await authService.logout()
     clearUser()
     toast.success("Successfully logged out.")
   }
 
   const forgotPassword = async (email: string) => {
-    await new Promise((r) => setTimeout(r, 500))
+    await authService.forgotPassword(email)
     toast.success(`Password reset link sent to ${email}`)
   }
 
@@ -100,18 +95,16 @@ export function useAuth() {
     workEmail: string
     password: string
   }) => {
-    await new Promise((r) => setTimeout(r, 1500))
-    toast.success("Organization registered successfully!")
-    return {
-      organizationId: "org-placeholder",
-      userId: "user-placeholder",
-      requiresEmailVerification: true,
-      message: "Organization registered successfully",
+    const result = await authService.registerOrganization(data)
+    if (result.user) {
+      setUser(result.user)
     }
+    toast.success(result.message)
+    return result
   }
 
   const verifyEmail = async (token: string, email: string) => {
-    await new Promise((r) => setTimeout(r, 1000))
+    await authService.verifyEmail(token, email)
     toast.success("Email verified successfully!")
   }
 

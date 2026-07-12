@@ -1,14 +1,21 @@
-﻿export const assetService = {
-  getAssets: async (_filter?: Record<string, unknown>) => {
-    return []
+import { apiRequest } from "@/lib/api"
+
+type Query = Record<string, string | number | boolean | null | undefined>
+
+export const assetService = {
+  getAssets: async (filter?: Query) => {
+    return apiRequest<unknown[]>("/assets", { query: filter })
   },
-  getAsset: async (_id: string) => {
-    return null
+  getAsset: async (id: string) => {
+    return apiRequest<unknown>(`/assets/${id}`)
   },
-  createAsset: async (_data: Record<string, unknown>) => {
+  createAsset: async (data: Record<string, unknown>) => {
+    return apiRequest<unknown>("/assets", { method: "POST", body: data })
   },
-  updateAsset: async (_id: string, _data: Record<string, unknown>) => {
+  updateAsset: async (id: string, data: Record<string, unknown>) => {
+    return apiRequest<unknown>(`/assets/${id}`, { method: "PUT", body: data })
   },
-  deleteAsset: async (_id: string) => {
+  deleteAsset: async (id: string) => {
+    return apiRequest<unknown>(`/assets/${id}`, { method: "DELETE" })
   },
 }

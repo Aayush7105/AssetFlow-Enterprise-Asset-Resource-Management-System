@@ -1,11 +1,22 @@
-﻿export const maintenanceService = {
-  getRequests: async (_filter?: Record<string, unknown>) => {
-    return []
+import { apiRequest } from "@/lib/api"
+
+type Query = Record<string, string | number | boolean | null | undefined>
+
+export const maintenanceService = {
+  getRequests: async (filter?: Query) => {
+    return apiRequest<unknown[]>("/maintenance", { query: filter })
   },
-  createRequest: async (_data: Record<string, unknown>) => {
+  createRequest: async (data: Record<string, unknown>) => {
+    return apiRequest<unknown>("/maintenance", { method: "POST", body: data })
   },
-  updateRequest: async (_id: string, _data: Record<string, unknown>) => {
+  updateRequest: async (id: string, data: Record<string, unknown>) => {
+    const action = typeof data.action === "string" ? data.action : "approve"
+    return apiRequest<unknown>(`/maintenance/${id}/${action}`, {
+      method: "PUT",
+      body: data,
+    })
   },
-  deleteRequest: async (_id: string) => {
+  deleteRequest: async (id: string) => {
+    return apiRequest<unknown>(`/maintenance/${id}/reject`, { method: "PUT" })
   },
 }
