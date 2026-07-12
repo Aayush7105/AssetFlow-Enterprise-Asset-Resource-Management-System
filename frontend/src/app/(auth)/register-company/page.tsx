@@ -129,15 +129,15 @@ export default function RegisterCompanyPage() {
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center pb-4">
-        <CardTitle className="text-2xl">Create your organization</CardTitle>
-        <p className="text-sm text-muted-foreground">
+    <Card className="border-0 shadow-none bg-transparent p-0 flex flex-col gap-0 w-full">
+      <CardHeader className="text-left pb-6 p-0 flex flex-col gap-1">
+        <CardTitle className="text-3xl font-bold tracking-tight">Create your organization</CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">
           Get started with AssetFlow in minutes
         </p>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-0">
         {}
         <div className="flex items-center justify-center gap-3">
           {STEP_META.map((step, index) => {

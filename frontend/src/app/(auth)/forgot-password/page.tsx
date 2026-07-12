@@ -21,17 +21,17 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Reset password</CardTitle>
-        <CardDescription>
+    <Card className="border-0 shadow-none bg-transparent p-0 flex flex-col gap-0 w-full">
+      <CardHeader className="text-left pb-6 p-0 flex flex-col gap-1">
+        <CardTitle className="text-3xl font-bold tracking-tight">Reset password</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground mt-1">
           {submitted
             ? "Check your email for reset instructions"
             : "Enter your email and we'll send you a reset link"}
         </CardDescription>
       </CardHeader>
       {submitted ? (
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0">
           <div className="rounded-lg border bg-muted/50 p-4 text-center">
             <p className="text-sm text-muted-foreground">
               We&apos;ve sent a password reset link to your email address. Please check your inbox.
@@ -40,23 +40,23 @@ export default function ForgotPasswordPage() {
         </CardContent>
       ) : (
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-0">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="name@company.com" required />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-4 pt-6 p-0">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Sending..." : "Send reset link"}
             </Button>
           </CardFooter>
         </form>
       )}
-      <CardFooter className="justify-center">
+      <CardFooter className="justify-start pt-6 p-0">
         <a
           href={ROUTES.LOGIN}
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground font-medium"
         >
           <ArrowLeft className="size-3.5" />
           Back to sign in
