@@ -1,14 +1,16 @@
+import { apiRequest } from "@/lib/api"
+
 export const notificationService = {
   getNotifications: async () => {
-    return []
+    return apiRequest<unknown[]>("/notifications")
   },
-  markAsRead: async (_id: string) => {
-    return undefined
+  markAsRead: async (id: string) => {
+    return apiRequest<unknown>(`/notifications/${id}/read`, { method: "PUT" })
   },
   markAllAsRead: async () => {
-    return undefined
+    return apiRequest<unknown>("/notifications/read-all", { method: "PUT" })
   },
-  deleteNotification: async (_id: string) => {
-    return undefined
+  deleteNotification: async (id: string) => {
+    return apiRequest<unknown>(`/notifications/${id}`, { method: "DELETE" })
   },
 }

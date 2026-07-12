@@ -100,6 +100,21 @@ export default function AssetsPage() {
     employeeId: "",
   })
 
+  const resetFormData = () => {
+    setFormData({
+      name: "",
+      category: "",
+      serialNumber: "",
+      department: "",
+      assignedEmployee: "",
+      location: "",
+      purchaseDate: "",
+      condition: "NEW",
+      status: "Available",
+      sharedResource: false,
+    })
+  }
+
   // Handlers
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -243,21 +258,6 @@ export default function AssetsPage() {
     toast({ title: "Maintenance Requested", description: `Submitted request for "${activeAsset.name}".` })
     setIsMaintenanceOpen(false)
     setMaintenanceForm({ description: "", priority: "Medium" })
-  }
-
-  const resetFormData = () => {
-    setFormData({
-      name: "",
-      category: "",
-      serialNumber: "",
-      department: "",
-      assignedEmployee: "",
-      location: "",
-      purchaseDate: "",
-      condition: "NEW",
-      status: "Available",
-      sharedResource: false,
-    })
   }
 
   const startEdit = (asset: Asset) => {
