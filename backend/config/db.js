@@ -1,5 +1,6 @@
-const {Client} = require('pg');
-const client = new Client({
+const { Pool } = require("pg");
+
+const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
@@ -7,4 +8,4 @@ const client = new Client({
     password: process.env.DB_PASSWORD,
 });
 
-module.exports = client;
+module.exports = pool;

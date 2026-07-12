@@ -12,9 +12,9 @@ const createAuditItemTable = async () => {
 
       auditor_id UUID NOT NULL,
 
-      result VARCHAR(20)
+      verification_status VARCHAR(20)
       CHECK (
-        result IN (
+        verification_status IN (
           'VERIFIED',
           'MISSING',
           'DAMAGED'
@@ -22,6 +22,10 @@ const createAuditItemTable = async () => {
       ) NOT NULL,
 
       remarks TEXT,
+
+      asset_condition VARCHAR(100),
+
+      asset_location VARCHAR(150),
 
       photo_url TEXT,
 
@@ -47,6 +51,32 @@ const createAuditItemTable = async () => {
       ON DELETE RESTRICT
 
     );
+
+    DO $$
+    BEGIN
+      IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'audit_items'
+        AND column_name = 'result'
+      )
+      AND NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'audit_items'
+        AND column_name = 'verification_status'
+      ) THEN
+        ALTER TABLE audit_items RENAME COLUMN result TO verification_status;
+      END IF;
+    END $$;
+
+    ALTER TABLE audit_items
+      ADD COLUMN IF NOT EXISTS verification_status VARCHAR(20),
+      ADD COLUMN IF NOT EXISTS asset_condition VARCHAR(100),
+      ADD COLUMN IF NOT EXISTS asset_location VARCHAR(150);
+
+    ALTER TABLE audit_items
+      ALTER COLUMN verification_status SET NOT NULL;
   `;
 
   await db.query(query);

@@ -4,7 +4,7 @@ const { hashPassword } = require("./utils/hash");
 
 const seedMockData = async () => {
     try {
-        await db.connect();
+        await db.query("SELECT 1");
         const hashedPassword = await hashPassword("password123");
 
         console.log("Seeding departments...");
