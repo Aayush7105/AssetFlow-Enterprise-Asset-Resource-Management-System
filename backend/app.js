@@ -20,16 +20,24 @@ const userRoutes = require("./routes/UserRoutes");
 const departmentRoutes = require("./routes/DepartmentRoutes");
 const authRoutes = require("./routes/authRoutes");
 const assetCategoryRoutes = require("./routes/assetCategoryRoutes");
+const assetRoutes = require("./routes/assetRoutes");
+const allocationRoutes = require("./routes/allocationRoutes");
+const resourceBookingRoutes = require("./routes/resourceBookingRoutes");
+const transferRequestRoutes = require("./routes/transferRequestRoutes");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 app.use("/api/users", userRoutes);
 app.use("/api/asset-categories", assetCategoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/departments", departmentRoutes);
-
+app.use("/api/assets", assetRoutes);
+app.use("/api/allocations", allocationRoutes);
+app.use("/api/resource-bookings", resourceBookingRoutes);
+app.use("/api/transfer-requests", transferRequestRoutes);
 db.connect().then(async() => {
     console.log("Connected to the database");
     await createUserTable();
