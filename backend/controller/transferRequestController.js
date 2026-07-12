@@ -472,3 +472,11 @@ const rejectTransferRequest = async (req, res) => {
 
     }
 };
+
+module.exports = {
+    createTransferRequest,
+    getAllTransferRequests,
+    getTransferRequestById,
+    approveTransferRequest,
+    rejectTransferRequest
+};

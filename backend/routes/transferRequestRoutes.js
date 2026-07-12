@@ -8,7 +8,7 @@ const {
     getTransferRequestById,
     approveTransferRequest,
     rejectTransferRequest
-} = require("../controllers/transferRequestController");
+} = require("../controller/transferRequestController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
