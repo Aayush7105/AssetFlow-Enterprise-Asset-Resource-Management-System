@@ -19,11 +19,14 @@ const createActivityLogTable = require("./models/ActivityLog");
 const userRoutes = require("./routes/UserRoutes");
 const departmentRoutes = require("./routes/DepartmentRoutes");
 const authRoutes = require("./routes/authRoutes");
+const assetCategoryRoutes = require("./routes/assetCategoryRoutes");
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
+app.use("/api/asset-categories", assetCategoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/departments", departmentRoutes);
 

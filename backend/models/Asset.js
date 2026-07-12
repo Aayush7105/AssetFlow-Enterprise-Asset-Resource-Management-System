@@ -47,19 +47,17 @@ const createAssetTable = async () => {
         )
       ) DEFAULT 'AVAILABLE',
 
-      photo_url TEXT,
-
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
       CONSTRAINT fk_asset_category
-      FOREIGN KEY(category_id)
+      FOREIGN KEY (category_id)
       REFERENCES asset_categories(id)
       ON DELETE RESTRICT,
 
       CONSTRAINT fk_asset_department
-      FOREIGN KEY(department_id)
+      FOREIGN KEY (department_id)
       REFERENCES departments(id)
       ON DELETE SET NULL
 
